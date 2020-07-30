@@ -11,6 +11,9 @@ The goal of this package is to provide researchers with a convenient way to down
 The main functionality of this package rests in the core `changes` module. This module identifies, downloads, homogenizes, and compiles all available ice velocity and elevation data in a user-defined region of interest. The output product is a list of data "stacks" - a compilation of homogenized data stored on identical grids with the same geographic projection and resolution. The following flow diagram outlines the `changes` module:
 \[ put the image here\]
 
+## :exclamation: Important User Warning
+The data sets utilized in this package are from a variety of sources, each of which must cited appropriately when they are used in publications, conference presentations, or in any other form. We have provided the listed citation for each source in the README files for both elevation \[link\] and ice velocity \[link\]. 
+
 ## Getting started
 It is recommended that a fresh anaconda environment is used for this code. For example, a new environment called `greenlandchanges` can be created and activated as
 ```
