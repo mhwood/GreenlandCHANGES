@@ -1,10 +1,10 @@
 # Greenland CHANGES
-Comprehensive Homogenization and dowNloading of Glacier Elevation and Speed data
+**C**omprehensive **H**omogenization **A**nd dow**N**loading of **G**lacier **E**levation and **S**peed data
+
+![Jakobshavn Example](https://github.com/mhwood/GreenlandCHANGES/blob/master/jakobshavn_example.jpg)
 
 ## Motivation
-Today, there is an ever-growing volume of ice elevation and velocity measurements on glaciers around the Greenland Ice Sheet. These unprecedented data sources represent a key cornerstone of scientific research into how the ice sheet is losing mass and contributing to sea level rise.
-
-The goal of this package is to provide researchers with a convenient way to download and homogenize all available data in regions of interest in a format which is convenient for analysis.
+Today, there is an ever-growing volume of ice elevation and velocity measurements on glaciers around the Greenland Ice Sheet. These unprecedented data sources represent a key cornerstone of scientific research into how the ice sheet is losing mass and contributing to sea level rise. However, identifying pertinent data and preparing it for analysis represents a time-consuming, yet routine task standing in the way of an initial research idea and tangible results. **The goal of this package is to provide researchers with a convenient way to download and homogenize all available ice velocity and/or elevation data in regions of interest in a format which is convenient for analysis.**
 
 ## Overview of the GreelandCHANGES package
 
@@ -34,7 +34,10 @@ pip install xarray
 pip install pyproj==2.0.0
 ```
 
-Finally, the GreenlandCHANGES package can also be installed with `pip` as 
+Finally, the GreenlandCHANGES package can be cloned as 
 ```
-pip install GreenlandCHANGES
+git clone https://github.com/mhwood/GreenlandCHANGES.git
 ```
+
+## Using the GreenlandCHANGES package
+For convenience, we provide several tutorials, presented as jupyter notebooks, in the `tutorials` directory.
