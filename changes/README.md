@@ -1,6 +1,8 @@
 ## CHANGES
 Comprehensive Homogenization and dowNloading of Glacier Elevation and Speed Data
 
+### Module Overview
+![schematic diagram of the changes module](https://github.com/mhwood/GreenlandCHANGES/blob/master/changes/changes_module.png)
 
 ### Initializing the CHANGES module
 
