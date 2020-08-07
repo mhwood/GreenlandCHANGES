@@ -41,3 +41,10 @@ git clone https://github.com/mhwood/GreenlandCHANGES.git
 
 ## Using the GreenlandCHANGES package
 For convenience, we provide several tutorials, presented as jupyter notebooks, in the [tutorials](https://github.com/mhwood/GreenlandCHANGES/tree/master/tutorials) directory.
+
+To use your conda environment in the jupyter notebook tutorials, ensure that it is available in the IPy kernel using the following lines (within your activated environment):
+```
+conda install -c anaconda ipykernel
+python3 -m ipykernel install --user --name=[name of environment]
+```
+
