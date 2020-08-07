@@ -40,4 +40,4 @@ git clone https://github.com/mhwood/GreenlandCHANGES.git
 ```
 
 ## Using the GreenlandCHANGES package
-For convenience, we provide several tutorials, presented as jupyter notebooks, in the `tutorials` directory.
+For convenience, we provide several tutorials, presented as jupyter notebooks, in the [tutorials](https://github.com/mhwood/GreenlandCHANGES/tree/master/tutorials) directory.
