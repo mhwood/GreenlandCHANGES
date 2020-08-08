@@ -1,6 +1,6 @@
 ## CHANGES: Glacier Elevation 
 
-The glacier elevation data collected in this module is collected from the following sources:
+The glacier elevation data collected in this module is listed in the table below. This module is being currently being developed - if you know of elevation data sources which are not included below, let us know! We will be happy to add them to this module.
 
 
 Short Name | Long Name | Data Archive
