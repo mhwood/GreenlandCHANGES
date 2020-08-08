@@ -32,6 +32,7 @@ pip install numpy
 pip install netcdf4
 pip install xarray
 pip install pyproj==2.0.0
+pip install h5py
 ```
 
 Finally, the GreenlandCHANGES package can be cloned as 
