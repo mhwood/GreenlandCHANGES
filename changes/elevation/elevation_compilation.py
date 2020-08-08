@@ -10,3 +10,7 @@ def download_and_regrid_elevation_data(GD_object):
     if GD_object.compile_arcticDEM_data:
         import changes.elevation.elevation_sources.compile_ArcticDEM_data as ArcticDEM
         ArcticDEM.generate_ArcticDEM_dataset(GD_object)
+
+    if GD_object.compile_icesat2_data:
+        import changes.elevation.elevation_sources.compile_ICESat2_data as ICESat2
+        ICESat2.generate_ICESat2_dataset(GD_object)

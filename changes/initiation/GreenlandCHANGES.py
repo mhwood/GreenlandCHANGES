@@ -70,14 +70,22 @@ class GreenlandCHANGES:
         self.overwrite_existing_elevation_data = False
         self.create_elevation_stacks = True
 
+        # Arctic DEM
         self.compile_arcticDEM_data = True
         self.download_new_arcticDEM_data = True
         self.keep_high_resolution_arcticDEM_data = False
         self.max_number_of_arcticDEM_files = 'all'
 
+        # GIMP
         self.compile_gimp_data = True
         self.compile_glistin_data = True
+
+        # ICESat-2
         self.compile_icesat2_data = True
+        self.download_new_icesat2_data = True
+        self.keep_h5_icesat2_data = False
+        self.max_number_of_icesat2_files = 'all'
+
         self.compile_oib_data = True
 
     def set_custom_extents(self,extents):
@@ -141,6 +149,14 @@ class GreenlandCHANGES:
             print('    keep_high_resolution_arcticDEM_data: ', self.keep_high_resolution_arcticDEM_data)
             print('    max_number_of_arcticDEM_files: ', self.max_number_of_arcticDEM_files)
 
+    def print_icesat2_parameters(self):
+        print('ICESat-2 Parameters:')
+        print('    compile_icesat2_data: ', self.compile_icesat2_data)
+        if self.compile_icesat2_data:
+            print('    download_new_icesat2_data: ', self.download_new_icesat2_data)
+            print('    keep_high_resolution_icesat2_data: ', self.keep_high_resolution_icesat2_data)
+            print('    max_number_of_icesat2_files: ', self.max_number_of_icesat2_files)
+
     # ####################################################################################################################
     # # these are functions to set parameters to run the retrieval and regridding scripts
 
@@ -165,7 +181,7 @@ class GreenlandCHANGES:
     def write_process_metadata_output(self):
         self.end_time = time.time()
         total_time = self.end_time - self.start_time
-        self.output_summary+='\n\nTotal time elapse for compilation: '+str(datetime.timedelta(seconds=total_time))
+        self.output_summary+='\n\nTotal time elapsed for compilation: '+str(datetime.timedelta(seconds=total_time))
 
         f=open(os.path.join(self.project_folder,self.region_name,self.region_name+' CHANGES Process Metadata.txt'),'w')
         f.write(self.output_summary)
