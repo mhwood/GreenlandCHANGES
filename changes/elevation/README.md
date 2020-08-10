@@ -21,7 +21,7 @@ Porter, Claire; Morin, Paul; Howat, Ian; Noh, Myoung-Jon; Bates, Brian; Peterman
 
 #### Cryosat-2
 
-Gourmelen, N. & Weissgerber, F. "Swath elevation from CryoSat-2 over the Greenland ice Sheet, 2011-2016" (2018) Polar Data Centre, Natural Environment Research Council, UK Research & Innovation, UK. [doi:10.5285/d762710b-562b-41a6-b9b4-adb26bfad4c6 ](doi:10.5285/d762710b-562b-41a6-b9b4-adb26bfad4c6)
+Gourmelen, N. & Weissgerber, F. "Swath elevation from CryoSat-2 over the Greenland ice Sheet, 2011-2016" (2018) Polar Data Centre, Natural Environment Research Council, UK Research & Innovation, UK. [doi:10.5285/d762710b-562b-41a6-b9b4-adb26bfad4c6](https://doi.org/10.5285/d762710b-562b-41a6-b9b4-adb26bfad4c6)
 
 #### GIMP 
 
