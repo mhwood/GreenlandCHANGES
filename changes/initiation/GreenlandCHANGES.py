@@ -57,9 +57,11 @@ class GreenlandCHANGES:
         self.overwrite_existing_velocity_data = False
         self.create_velocity_stacks = True
 
+        # GOLIVE
         self.compile_golive_data = True
         self.download_new_golive_data = True
 
+        # TSX
         self.compile_tsx_data = True
         self.download_new_tsx_data = True
 
@@ -74,16 +76,22 @@ class GreenlandCHANGES:
         self.compile_arcticDEM_data = True
         self.download_new_arcticDEM_data = True
         self.keep_high_resolution_arcticDEM_data = False
+        self.resample_high_resolution_arcticDEM_data = True
         self.max_number_of_arcticDEM_files = 'all'
 
         # GIMP
         self.compile_gimp_data = True
+
+        # GLISTIN
         self.compile_glistin_data = True
+        self.download_new_glistin_data = True
+        self.max_number_of_glistin_files = 'all'
+        self.podaac_username = ''
+        self.podaac_password = ''
 
         # ICESat-2
         self.compile_icesat2_data = True
         self.download_new_icesat2_data = True
-        self.keep_h5_icesat2_data = False
         self.max_number_of_icesat2_files = 'all'
 
         self.compile_oib_data = True
@@ -147,6 +155,7 @@ class GreenlandCHANGES:
         if self.compile_arcticDEM_data:
             print('    download_new_arcticDEM_data: ', self.download_new_arcticDEM_data)
             print('    keep_high_resolution_arcticDEM_data: ', self.keep_high_resolution_arcticDEM_data)
+            print('    resample_high_resolution_arcticDEM_data: ', self.resample_high_resolution_arcticDEM_data)
             print('    max_number_of_arcticDEM_files: ', self.max_number_of_arcticDEM_files)
 
     def print_icesat2_parameters(self):
@@ -154,8 +163,16 @@ class GreenlandCHANGES:
         print('    compile_icesat2_data: ', self.compile_icesat2_data)
         if self.compile_icesat2_data:
             print('    download_new_icesat2_data: ', self.download_new_icesat2_data)
-            print('    keep_high_resolution_icesat2_data: ', self.keep_high_resolution_icesat2_data)
             print('    max_number_of_icesat2_files: ', self.max_number_of_icesat2_files)
+
+    def print_glistin_parameters(self):
+        print('GLISTIN-A Parameters:')
+        print('    compile_glistin_data: ', self.compile_glistin_data)
+        if self.compile_glistin_data:
+            print('    download_new_glistin_data: ', self.download_new_glistin_data)
+            print('    max_number_of_glistin_files: ', self.max_number_of_glistin_files)
+            print('    podaac_username: ',self.podaac_username)
+            print('    podaac_password: ', self.podaac_password)
 
     # ####################################################################################################################
     # # these are functions to set parameters to run the retrieval and regridding scripts
@@ -211,3 +228,4 @@ class GreenlandCHANGES:
                 ec.download_and_regrid_elevation_data(self)
 
             self.write_process_metadata_output()
+

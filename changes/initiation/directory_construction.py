@@ -63,6 +63,23 @@ def construct_output_directory_structure(GC_object):
         if 'Data' not in os.listdir(os.path.join(GC_object.data_folder, 'Elevation', 'ICESat2')):
             os.mkdir(os.path.join(GC_object.data_folder, 'Elevation', 'ICESat2','Data'))
 
+    if GC_object.compile_icesat2_data:
+        if 'ICESat2' not in os.listdir(os.path.join(GC_object.data_folder, 'Elevation')):
+            os.mkdir(os.path.join(GC_object.data_folder, 'Elevation', 'ICESat2'))
+
+        if 'Data' not in os.listdir(os.path.join(GC_object.data_folder, 'Elevation', 'ICESat2')):
+            os.mkdir(os.path.join(GC_object.data_folder, 'Elevation', 'ICESat2','Data'))
+
+    if GC_object.compile_glistin_data:
+        if 'GLISTIN' not in os.listdir(os.path.join(GC_object.data_folder, 'Elevation')):
+            os.mkdir(os.path.join(GC_object.data_folder, 'Elevation', 'GLISTIN'))
+
+        if 'Data' not in os.listdir(os.path.join(GC_object.data_folder, 'Elevation', 'GLISTIN')):
+            os.mkdir(os.path.join(GC_object.data_folder, 'Elevation', 'GLISTIN','Data'))
+
+        if 'L3' not in os.listdir(os.path.join(GC_object.data_folder, 'Elevation', 'GLISTIN','Data')):
+            os.mkdir(os.path.join(GC_object.data_folder, 'Elevation', 'GLISTIN','Data','L3'))
+
 
 
 
