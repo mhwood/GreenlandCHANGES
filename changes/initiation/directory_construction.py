@@ -80,6 +80,13 @@ def construct_output_directory_structure(GC_object):
         if 'L3' not in os.listdir(os.path.join(GC_object.data_folder, 'Elevation', 'GLISTIN','Data')):
             os.mkdir(os.path.join(GC_object.data_folder, 'Elevation', 'GLISTIN','Data','L3'))
 
+    if GC_object.compile_gimp_data:
+        if 'GIMP' not in os.listdir(os.path.join(GC_object.data_folder, 'Elevation')):
+            os.mkdir(os.path.join(GC_object.data_folder, 'Elevation', 'GIMP'))
+
+        if 'Data' not in os.listdir(os.path.join(GC_object.data_folder, 'Elevation', 'GIMP')):
+            os.mkdir(os.path.join(GC_object.data_folder, 'Elevation', 'GIMP','Data'))
+
 
 
 

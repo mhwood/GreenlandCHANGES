@@ -174,6 +174,10 @@ class GreenlandCHANGES:
             print('    podaac_username: ',self.podaac_username)
             print('    podaac_password: ', self.podaac_password)
 
+    def print_gimp_parameters(self):
+        print('GIMP Parameters:')
+        print('    compile_gimp_data: ', self.compile_gimp_data)
+
     # ####################################################################################################################
     # # these are functions to set parameters to run the retrieval and regridding scripts
 
