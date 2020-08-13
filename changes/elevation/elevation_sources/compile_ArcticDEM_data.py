@@ -250,14 +250,15 @@ def download_and_resample_arcticdem_files(GD_object,dem_files):
                 print('              File already obtained')
 
         #resample the data if its not already done
-        if not resampled_data_present:
-            if GD_object.print_sub_outputs:
-                print('              Downsampling file... ')
-            resample_arcticdem_tile_nearest_neighbor(GD_object, tile_name, file_name)
-            resampled_data_present=True
-        else:
-            if GD_object.print_sub_outputs:
-                print('              File already resampled')
+        if GD_object.resample_high_resolution_arcticDEM_data:
+            if not resampled_data_present:
+                if GD_object.print_sub_outputs:
+                    print('              Downsampling file... ')
+                resample_arcticdem_tile_nearest_neighbor(GD_object, tile_name, file_name)
+                resampled_data_present=True
+            else:
+                if GD_object.print_sub_outputs:
+                    print('              File already resampled')
 
         if not GD_object.keep_high_resolution_arcticDEM_data:
             # remove the tar files and raw data after resampling because these files are large
@@ -420,14 +421,14 @@ def generate_ArcticDEM_dataset(GD_object):
 
     dem_files = find_arcticdem_dem_files_in_domain(GD_object)
 
-    if isinstance(GD_object.max_number_of_arcticDEM_files,int):
-        if len(dem_files)>GD_object.max_number_of_arcticDEM_files:
-            dem_files = dem_files[:GD_object.max_number_of_arcticDEM_files]
-
     message = '            Found ' + str(len(dem_files)) + ' files'
     GD_object.output_summary += '\n' + message
     if GD_object.print_sub_outputs:
         print(message)
+
+    if isinstance(GD_object.max_number_of_arcticDEM_files,int):
+        if len(dem_files)>GD_object.max_number_of_arcticDEM_files:
+            dem_files = dem_files[:GD_object.max_number_of_arcticDEM_files]
 
     # step 2: download the data and down-sample it at the requested resolution
     message = '        Downloading files and down-sampling (if not already available)'
