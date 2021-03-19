@@ -11,6 +11,7 @@ GIMP | MEaSURES Greenland Ice Mapping Projection Digital Elevation Model | [NSID
 GLISTIN | Oceans Melting Greenland -  Glacier and Land Ice Topography Interferometer | [JPL PO.DAAC](https://podaac.jpl.nasa.gov/dataset/OMG_L3_ICE_ELEV_GLISTINA)
 Icebridge | IceBridge ATM L2 Icessn Elevation, Slope, and Roughness | [NSIDC](https://nsidc.org/data/ILATM2/versions/2)
 ICESat2 | ATLAS/ICESat-2 L3A Land Ice Height | [NSIDC](https://nsidc.org/data/atl06)
+SPOT5 | SPOT | Link
 
 ## :exclamation: User Note
 The following citations must be included with the use of any data collected from the sources above:
