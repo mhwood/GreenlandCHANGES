@@ -3,14 +3,15 @@
 The glacier elevation data collected in this module is listed in the table below. This module is being currently being developed - if you know of elevation data sources which are not included below, let us know! We will be happy to add them to this module.
 
 
-Short Name | Long Name | Data Archive
+Short Name | Long Name | Data Archive | Status
 ------------ | ------------- | -------------
-ArcticDEM | High-resolution, high quality, digital surface model of the Arctic using optical stereo imagery | [Polar Geospatial Center](https://www.pgc.umn.edu/data/arcticdem/)
-Cryosat2 | Swath elevation from CryoSat-2 over the Greenland Ice Sheet, 2011-2016 | [BAS](https://ramadda.data.bas.ac.uk/repository/entry/show/?entryid=d762710b-562b-41a6-b9b4-adb26bfad4c6)
-GIMP | MEaSURES Greenland Ice Mapping Projection Digital Elevation Model | [NSIDC](https://nsidc.org/data/nsidc-0645/versions/1)
-GLISTIN | Oceans Melting Greenland -  Glacier and Land Ice Topography Interferometer | [JPL PO.DAAC](https://podaac.jpl.nasa.gov/dataset/OMG_L3_ICE_ELEV_GLISTINA)
-Icebridge | IceBridge ATM L2 Icessn Elevation, Slope, and Roughness | [NSIDC](https://nsidc.org/data/ILATM2/versions/2)
-ICESat2 | ATLAS/ICESat-2 L3A Land Ice Height | [NSIDC](https://nsidc.org/data/atl06)
+ArcticDEM | High-resolution, high quality, digital surface model of the Arctic using optical stereo imagery | [Polar Geospatial Center](https://www.pgc.umn.edu/data/arcticdem/) | Implemented via Nearest Neighbor
+Cryosat2 | Swath elevation from CryoSat-2 over the Greenland Ice Sheet, 2011-2016 | [BAS](https://ramadda.data.bas.ac.uk/repository/entry/show/?entryid=d762710b-562b-41a6-b9b4-adb26bfad4c6) | Not yet implemented
+GIMP | MEaSURES Greenland Ice Mapping Projection Digital Elevation Model | [NSIDC](https://nsidc.org/data/nsidc-0645/versions/1) | Implemented via Local Averaging
+GLISTIN | Oceans Melting Greenland -  Glacier and Land Ice Topography Interferometer | [JPL PO.DAAC](https://podaac.jpl.nasa.gov/dataset/OMG_L3_ICE_ELEV_GLISTINA) | Implemented via Local Averaging
+Icebridge | IceBridge ATM L2 Icessn Elevation, Slope, and Roughness | [NSIDC](https://nsidc.org/data/ILATM2/versions/2) | Implemented via Local Averaging
+ICESat2 | ATLAS/ICESat-2 L3A Land Ice Height | [NSIDC](https://nsidc.org/data/atl06) | Implemented via Local Averaging
+TanDEMX | TanDEM-X 90m Digital Elevation Model | [DLR Geoservice](https://download.geoservice.dlr.de/TDM90) | Not yet Implemented
 
 ## :exclamation: User Note
 The following citations must be included with the use of any data collected from the sources above:
