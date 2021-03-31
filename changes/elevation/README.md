@@ -4,7 +4,7 @@ The glacier elevation data collected in this module is listed in the table below
 
 
 Short Name | Long Name | Data Archive | Status
------------- | ------------- | -------------
+------------ | ------------- | ------------- | -------------
 ArcticDEM | High-resolution, high quality, digital surface model of the Arctic using optical stereo imagery | [Polar Geospatial Center](https://www.pgc.umn.edu/data/arcticdem/) | Implemented via Nearest Neighbor
 Cryosat2 | Swath elevation from CryoSat-2 over the Greenland Ice Sheet, 2011-2016 | [BAS](https://ramadda.data.bas.ac.uk/repository/entry/show/?entryid=d762710b-562b-41a6-b9b4-adb26bfad4c6) | Not yet implemented
 GIMP | MEaSURES Greenland Ice Mapping Projection Digital Elevation Model | [NSIDC](https://nsidc.org/data/nsidc-0645/versions/1) | Implemented via Local Averaging
