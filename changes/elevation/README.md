@@ -6,15 +6,18 @@ The glacier elevation data collected in this module is listed in the table below
 Short Name | Long Name | Data Archive | Status
 ------------ | ------------- | ------------- | -------------
 ArcticDEM | High-resolution, high quality, digital surface model of the Arctic using optical stereo imagery | [Polar Geospatial Center](https://www.pgc.umn.edu/data/arcticdem/) | Implemented via Nearest Neighbor
+ASTER | ASTER Global Digital Elevation Model | [USGS](https://lpdaac.usgs.gov/products/astgtmv003) | Not yet implemented
 Cryosat2 | Swath elevation from CryoSat-2 over the Greenland Ice Sheet, 2011-2016 | [BAS](https://ramadda.data.bas.ac.uk/repository/entry/show/?entryid=d762710b-562b-41a6-b9b4-adb26bfad4c6) | Not yet implemented
 GIMP | MEaSURES Greenland Ice Mapping Projection Digital Elevation Model | [NSIDC](https://nsidc.org/data/nsidc-0645/versions/1) | Implemented via Local Averaging
 GLISTIN | Oceans Melting Greenland -  Glacier and Land Ice Topography Interferometer | [JPL PO.DAAC](https://podaac.jpl.nasa.gov/dataset/OMG_L3_ICE_ELEV_GLISTINA) | Implemented via Local Averaging
 Icebridge-LVIS | IceBridge LVIS-GH L2 Geolocated Surface Elevation Product | [NSIDC](https://nsidc.org/data/ILVGH2/versions/1) | Implemented via Local Averaging
 Icebridge-ILATM2  | IceBridge ATM L2 Icessn Elevation, Slope, and Roughness | [NSIDC](https://nsidc.org/data/ILATM2/versions/2) | Implemented via Local Averaging
 Icebridge-MCoRDS | IceBridge MCoRDS L2 Ice Thickness | [NSIDC](https://nsidc.org/data/IRMCR2/versions/1) | Not yet Implemented
-ICESat | A | A | A
+ICESat | GLAS/ICESat L2 Global Antarctic and Greenland Ice Sheet Altimetry Data (HDF5), Version 34 | [NSIDC](https://nsidc.org/data/GLAH12/versions/34) | Not yet implemented
 ICESat2 | ATLAS/ICESat-2 L3A Land Ice Height | [NSIDC](https://nsidc.org/data/atl06) | Implemented via Local Averaging
-TanDEM-X | TanDEM-X 90m Digital Elevation Model | [DLR Geoservice](https://download.geoservice.dlr.de/TDM90) | Not yet Implemented
+KMS | Kort-og Matrikelstyrelsen DEM | [NSIDC](https://nsidc.org/data/NSIDC-0052/versions/1) | Not yet implemented
+SPIRIT | SPOT 5 stereoscopic survey of Polar Ice: Reference Images and Topographies | Location TBD | Not yet implemented
+TanDEM-X | TanDEM-X 90m Digital Elevation Model | [DLR Geoservice](https://download.geoservice.dlr.de/TDM90) | Not yet implemented
 
 ## :exclamation: User Note
 The following citations must be included with the use of any data collected from the sources above:
