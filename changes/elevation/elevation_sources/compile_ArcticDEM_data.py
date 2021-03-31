@@ -1,16 +1,17 @@
 
+from datetime import datetime
 import numpy as np
-import ogr
+from osgeo import ogr
 import shapefile
 import requests
 import urllib
 import os
 import tarfile
-import gdal
-import osr
+from osgeo import gdal
+from osgeo import osr
 import xarray as xr
 import shutil
-from toolbox.time import YMD_to_DecYr
+from ....toolbox.time import YMD_to_DecYr
 
 #######################################################################################
 #These are the scripts for finding a list of ArcticDEM files
@@ -81,13 +82,13 @@ def find_arcticdem_dem_files_from_shapefile(GD_object):
             filePath = records[s][9]
             tile = filePath.split('/')[10]
             fileID = filePath.split('/')[-1][:-7]
-
-            try:
-                resp = urllib.request.urlopen(filePath)   #ArcticDEM_Strip_Index_Rel7 has errors
-            except urllib.error.HTTPError:                #This filters out files which do not exist
-                pass
-            else:
-                dem_files.append([tile, fileID])
+            if '.edu' in filePath:
+                try:
+                    resp = urllib.request.urlopen(filePath)   #ArcticDEM_Strip_Index_Rel7 has errors
+                except urllib.error.HTTPError:                #This filters out files which do not exist
+                    pass
+                else:
+                    dem_files.append([tile, fileID])
 
     output = ''
     for strip in dem_files:
@@ -121,7 +122,16 @@ def find_arcticdem_dem_files_in_domain(GD_object):
             line=line.split(',')
             if len(line)>1:
                 dem_files.append(line)
-    return(dem_files)
+
+    output_dem_files = []
+
+    for df in range(len(dem_files)):
+        dem_date_str = dem_files[df][1].split('_')[2][:8]
+        date_test = datetime(int(dem_date_str[:4]), int(dem_date_str[4:6]), int(dem_date_str[6:8]))
+        if date_test >= GD_object.date_1 and date_test < GD_object.date_2:
+            output_dem_files.append(dem_files[df])
+
+    return(output_dem_files)
 
 #######################################################################################
 #These are the scripts for downloading the list of arctic dem files
@@ -398,7 +408,10 @@ def save_arcticdem_layers(GD_object,dem_layers, dem_dates, dem_decYrs, dem_file_
         swath[dem_dates[dd]].attrs['file_name'] = dem_file_names[dd]
         swath[dem_dates[dd]].attrs['dec_yr'] = dem_decYrs[dd]
 
-    output_file = os.path.join(GD_object.project_folder,GD_object.region_name,'Elevation','Data',GD_object.region_name+' ArcticDEM Elevation Grids.nc')
+    if len(GD_object.arcticdem_output_file)>2:
+        output_file = GD_object.arcticdem_output_file
+    else:
+        output_file = os.path.join(GD_object.project_folder,GD_object.region_name,'Elevation','Data',GD_object.region_name+' ArcticDEM Elevation Grids.nc')
     print('        Outputting data to ' + output_file)
 
     swath.to_netcdf(output_file)

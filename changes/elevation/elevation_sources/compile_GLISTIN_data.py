@@ -5,8 +5,8 @@ import numpy as np
 import os
 import requests
 from osgeo import ogr
-from toolbox.reprojection import reproject_polygon
-from toolbox.time import YMD_to_DecYr
+from ....toolbox.reprojection import reproject_polygon
+from ....toolbox.time import YMD_to_DecYr
 
 #######################################################################################
 # These files are to find the files in the domain
@@ -36,7 +36,7 @@ def find_glistin_dem_files_from_shapefile(GD_object):
     bboxWKT = bboxToWKT(bbox)
     poly1 = ogr.CreateGeometryFromWkt(bboxWKT)
 
-    import changes.reference.glistin_domains as gld
+    from ...reference import glistin_domains as gld
     glistin_ids = list(gld.glistin_id_to_polygon_outline.keys())
 
     output_ids = []
@@ -48,7 +48,7 @@ def find_glistin_dem_files_from_shapefile(GD_object):
         intersection = poly1.Intersection(poly2)
         intersection = intersection.ExportToWkt()
         if "EMPTY" not in intersection:
-            output_ids.append(glistin_id)
+            output_ids.append(glistin_id+'.nc')
 
     output = ''
     for strip in output_ids:
@@ -239,7 +239,10 @@ def save_glistin_layers(GD_object, dem_layers, dem_dates_unique, dem_decYrs, dem
         swath[dem_dates_unique[dd]].attrs['file_name'] = dem_file_names[dd]
         swath[dem_dates_unique[dd]].attrs['dec_yr'] = dem_decYrs[dd]
 
-    output_file = os.path.join(GD_object.project_folder,GD_object.region_name,'Elevation','Data',GD_object.region_name+' GLISTIN Elevation Grids.nc')
+    if len(GD_object.glistin_output_file)>2:
+        output_file = GD_object.glistin_output_file
+    else:
+        output_file = os.path.join(GD_object.project_folder,GD_object.region_name,'Elevation','Data',GD_object.region_name+' GLISTIN Elevation Grids.nc')
 
     message = '        Outputting data to ' + output_file
     GD_object.output_summary += '\n' + message
@@ -293,5 +296,7 @@ def generate_glistin_dataset(GD_object):
         # step 3: stack the glistin data into layers
         dem_layers, dem_dates_unique, dem_decYrs = get_glistin_layers(GD_object,dem_file_names, dem_dates)
 
-        # step 4: save the glistin layer to an nc file
-        save_glistin_layers(GD_object,dem_layers, dem_dates_unique, dem_decYrs, dem_file_names)
+        if len(dem_layers)>0:
+
+            # step 4: save the glistin layer to an nc file
+            save_glistin_layers(GD_object,dem_layers, dem_dates_unique, dem_decYrs, dem_file_names)

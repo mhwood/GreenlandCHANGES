@@ -1,13 +1,18 @@
 
 import os
 import h5py
+from datetime import datetime
 import xarray as xr
+import netCDF4 as nc4
 import numpy as np
 import itertools
 import requests
-from toolbox.time import YMD_to_DecYr
-from toolbox.reprojection import reproject_polygon
-from toolbox.series import series_to_N_points
+from ....toolbox.time import YMD_to_DecYr
+from ....toolbox.reprojection import reproject_polygon
+from ....toolbox.series import series_to_N_points
+
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 ########################################################################################################################
@@ -115,7 +120,7 @@ def find_icesat2_dem_files_from_nsidc_portal(GD_object):
     version = '003'
 
     time_start = '2018-01-01T00:00:00Z'
-    time_end = '2021-01-01T00:00:00Z'
+    time_end = '2100-01-01T00:00:00Z'
 
     polygon = getPolygonString(GD_object.elevation_grid_x,GD_object.elevation_grid_y)
     filename_filter = '*'
@@ -174,7 +179,19 @@ def find_icesat2_dem_files_in_domain(GD_object):
             if len(line)>1:
                 dem_files.append(line[1]+'.h5')
                 dem_file_links.append(line[2])
-    return(dem_files,dem_file_links)
+
+    output_dem_files = []
+    output_dem_file_links = []
+    for df in range(len(dem_files)):
+        dem_file=dem_files[df]
+        dem_date_str = dem_file.split('_')[1][:8]
+        date_test = datetime(int(dem_date_str[:4]),int(dem_date_str[4:6]),int(dem_date_str[6:8]))
+        if date_test >= GD_object.date_1 and date_test < GD_object.date_2:
+            output_dem_files.append(dem_file)
+            dem_file_links.append(dem_file_links[df])
+
+
+    return(output_dem_files,output_dem_file_links)
 
 
 #######################################################################################
@@ -205,6 +222,8 @@ def download_icesat2_files(GD_object,dem_files,dem_file_links):
             yearMonth = dem_file.split('_')[1][:8]
             download_file=True
 
+            # try:
+            #
             if yearMonth in os.listdir(dataFolder):
                 for fil in os.listdir(dataFolder+'/'+yearMonth):
                     if fil[:20]==dem_file[:20]: #this allows for older versions to be kept
@@ -218,6 +237,9 @@ def download_icesat2_files(GD_object,dem_files,dem_file_links):
                 if GD_object.print_sub_outputs:
                     print('              File already downloaded')
 
+            # except:
+            #     print('An error occurred - file skipped')
+
 
 #######################################################################################
 #These are the scripts for creating the layers in the ICESat2 data
@@ -230,37 +252,36 @@ def readXYZsFromh5file(GD_object,filepath):
     f = h5py.File(filepath, 'r')
     valid_points = np.array([[0,0],[0,0]])
 
-
     # #gtxx groups have the elevation data
     # #in each gtxx group, there is a land_ice_segments group
     # #this group has fields for longitude, latitude, h_li, and a boolean flag
     xyz_started=False
 
     for beam in ['gt1r','gt1l','gt2r','gt2l','gt3r','gt3l']:
-         grp = f[beam]['land_ice_segments']
-         longitude = np.array(list(grp['longitude']))
-         latitude = np.array(list(grp['latitude']))
-         height = np.array(list(grp['h_li']))
-         flag = np.array(list(grp['atl06_quality_summary']))
-         xyz = np.hstack([np.reshape(longitude,(len(longitude),1)),
-                          np.reshape(latitude, (len(latitude), 1)),
-                          np.reshape(height, (len(height), 1))])
+         if beam in f.keys():
+             grp = f[beam]['land_ice_segments']
+             longitude = grp.get('longitude')[:]
+             latitude = grp.get('latitude')[:]
+             height = grp.get('h_li')[:]
+             flag = grp.get('atl06_quality_summary')[:]
+             xyz = np.hstack([np.reshape(longitude,(len(longitude),1)),
+                              np.reshape(latitude, (len(latitude), 1)),
+                              np.reshape(height, (len(height), 1))])
 
-         xyz=xyz[flag==0,:]
-         if GD_object.print_sub_outputs:
-            print('              Beam '+beam+' has '+str(np.shape(xyz)[0])+' valid points')
+             xyz=xyz[flag==0,:]
+             if GD_object.print_sub_outputs:
+                print('              Beam '+beam+' has '+str(np.shape(xyz)[0])+' valid points')
 
-         if not xyz_started:
-             valid_points = np.copy(xyz)
-             xyz_started=True
-         else:
-             valid_points=np.vstack([valid_points,xyz])
+             if not xyz_started:
+                 valid_points = np.copy(xyz)
+                 xyz_started=True
+             else:
+                 valid_points=np.vstack([valid_points,xyz])
+
 
     return(valid_points)
 
 def create_icesat2_dem_field(GD_object,valid_points):
-
-
 
     #limit the points to the region domain
     dem_data = valid_points
@@ -268,7 +289,7 @@ def create_icesat2_dem_field(GD_object,valid_points):
     dem_data = dem_data[np.logical_and(dem_data[:, 1] <= np.max(GD_object.elevation_grid_y), dem_data[:, 1] >= np.min(GD_object.elevation_grid_y))]
 
     # create the glacier field
-    dem_grid = np.zeros((len(GD_object.elevation_grid_y), len(GD_object.elevation_grid_x)))
+    sum_grid = np.zeros((len(GD_object.elevation_grid_y), len(GD_object.elevation_grid_x)))
     count_grid = np.zeros((len(GD_object.elevation_grid_y), len(GD_object.elevation_grid_x)))
     # print('                Glacier field size: ' + str(np.shape(dem_grid)))
 
@@ -276,54 +297,97 @@ def create_icesat2_dem_field(GD_object,valid_points):
     for dd in range(np.shape(dem_data)[0]):
         x_index = np.argmin(np.abs(GD_object.elevation_grid_x-dem_data[dd,0]))
         y_index = np.argmin(np.abs(GD_object.elevation_grid_y-dem_data[dd,1]))
-        dem_grid[y_index,x_index]+=dem_data[dd,2]
+        sum_grid[y_index,x_index]+=dem_data[dd,2]
         count_grid[y_index,x_index]+=1
 
-    dem_grid[count_grid>0] = dem_grid[count_grid>0]/count_grid[count_grid>0]
-    dem_grid[count_grid == 0] = -99
-
-    return(dem_grid)
+    return(sum_grid,count_grid)
 
 def get_icesat2_layers(GD_object,dem_file_names):
 
-    dem_layers=[]
-    dem_dates=[]
-    dem_decYrs = []
-    for dd in range(len(dem_file_names)):
-        dem_file = dem_file_names[dd]
-        if GD_object.print_sub_outputs:
-            print('          Working on file '+dem_file+' ('+str(dd+1)+' of '+str(len(dem_file_names))+')')
+    #get a unique set of dates and the files that correspond to them
+    unique_dem_dates = []
+    dem_file_lists = []
+    for dem_file in dem_file_names:
         dem_date = dem_file.split('_')[1][:8]
-        dem_dates.append(dem_date)
+        if dem_date not in unique_dem_dates:
+            unique_dem_dates.append(dem_date)
+            dem_file_lists.append([dem_file])
+        else:
+            dem_file_lists[unique_dem_dates.index(dem_date)].append(dem_file)
+
+    dem_dates = []
+    dem_layers = []
+    dem_decYrs = []
+    dem_filename_strings = []
+    for dd in range(len(unique_dem_dates)):
+
+        dem_date = unique_dem_dates[dd]
+        dem_files = dem_file_lists[dd]
+        dem_files_used = []
+
+        if GD_object.print_sub_outputs:
+            print('          Working on date ' + dem_date + ' (' + str(dd + 1) + ' of ' + str(len(unique_dem_dates)) + ')')
+
+        sum_grid = np.zeros((len(GD_object.elevation_grid_y), len(GD_object.elevation_grid_x)))
+        count_grid = np.zeros((len(GD_object.elevation_grid_y), len(GD_object.elevation_grid_x)))
         dem_decYr = YMD_to_DecYr(int(dem_date[:4]), int(dem_date[4:6]), int(dem_date[6:8]))
-        dem_decYrs.append(dem_decYr)
 
+        # add data from each file to the dem grid
+        for df in range(len(dem_files)):
+            dem_file = dem_files[df]
+            if GD_object.print_sub_outputs:
+                print('            Working on file '+dem_file+' ('+str(dd+1)+' of '+str(len(dem_files))+')')
 
-        #read in the points
-        if GD_object.print_sub_outputs:
-            print('            Reading in the file points')
-        valid_points = readXYZsFromh5file(GD_object,os.path.join(GD_object.data_folder,'Elevation','ICESat2','Data',dem_date,dem_file))
-        # print('              Array size: ' + str(np.shape(valid_points)))
-        # print('              Domain of array:  x = ' + str(np.min(valid_points[:, 0])) + ' to ' + str(np.max(valid_points[:, 0])) + ',  y = ' + str(np.min(valid_points[:, 1])) + ' to ' + str(np.max(valid_points[:, 1])))
+            #read in the points
+            if GD_object.print_sub_outputs:
+                print('              Reading in the file points')
+            if dem_file not in os.listdir(os.path.join(GD_object.data_folder,'Elevation','ICESat2','Data',dem_date)):
+                for fil in os.listdir(os.path.join(GD_object.data_folder,'Elevation','ICESat2','Data',dem_date)):
+                    if dem_file[:20]==fil[:20]:
+                        dem_file_version_checked = fil
+            else:
+                dem_file_version_checked = dem_file
 
-        #reproject the points to polar stereo
-        if GD_object.print_sub_outputs:
-            print('            Reprojecting the points to polar stereo')
-        valid_points = reproject_polygon(valid_points,4326,3413)
+            valid_points = readXYZsFromh5file(GD_object,os.path.join(GD_object.data_folder,'Elevation','ICESat2','Data',dem_date,dem_file_version_checked))
 
-        #put the points on the region grid
-        if GD_object.print_sub_outputs:
-            print('            Sampling the points onto the regional domain')
-        dem_layer = create_icesat2_dem_field(GD_object,valid_points)
-        dem_layers.append(dem_layer)
+            #reproject the points to polar stereo
+            if GD_object.print_sub_outputs:
+                print('              Reprojecting the points to polar stereo')
+            if len(valid_points)>3:
+                valid_points = reproject_polygon(valid_points,4326,3413)
 
-    return(dem_layers, dem_dates, dem_decYrs)
+            #put the points on the region grid
+            if GD_object.print_sub_outputs:
+                print('              Sampling the points onto the regional domain')
+            layer_sum_grid, layer_count_grid = create_icesat2_dem_field(GD_object,valid_points)
+
+            if np.sum(layer_count_grid)>0:
+                sum_grid[layer_count_grid>0]+=layer_sum_grid[layer_count_grid>0]
+                count_grid[layer_count_grid > 0] += layer_count_grid[layer_count_grid > 0]
+                dem_files_used.append(dem_file_version_checked)
+
+        dem_grid = np.copy(sum_grid)
+        dem_grid[count_grid > 0] = dem_grid[count_grid > 0] / count_grid[count_grid > 0]
+        dem_grid[count_grid == 0] = -99
+
+        if np.any(dem_grid > -99):
+            if GD_object.print_sub_outputs:
+                print('              Valid points found - layer added to main output')
+            dem_decYrs.append(dem_decYr)
+            dem_dates.append(dem_date)
+            dem_layers.append(dem_grid)
+            dem_filename_strings.append(','.join(dem_files_used))
+        else:
+            if GD_object.print_sub_outputs:
+                print('              No valid points found within array')
+
+    return(dem_layers, dem_dates, dem_decYrs,dem_filename_strings)
 
 
 #######################################################################################
 #These are the scripts for stacking the glacier fields into one
 
-def save_icesat2_layers(GD_object, dem_layers, dem_dates, dem_decYrs, dem_file_names):
+def save_icesat2_layers_as_grids(GD_object, dem_layers, dem_dates, dem_decYrs, dem_file_names):
 
     data_vars = {}
     for dd in range(len(dem_dates)):
@@ -343,6 +407,75 @@ def save_icesat2_layers(GD_object, dem_layers, dem_dates, dem_decYrs, dem_file_n
 
     swath.to_netcdf(output_file)
 
+def save_icesat2_layers_as_points(GD_object, dem_layers, dem_dates, dem_decYrs, dem_file_names):
+
+    ############################################################################
+    # this first part converts the points to x,y,z,xi,yi columns grids
+    message = '        Converting grids to points for efficient storage'
+    GD_object.output_summary += '\n' + message
+    if GD_object.print_sub_outputs:
+        print(message)
+
+    first_grid = dem_layers[0]
+    xi = np.arange(np.shape(first_grid)[1])
+    yi = np.arange(np.shape(first_grid)[0])
+    XI, YI = np.meshgrid(xi, yi)
+    X, Y = np.meshgrid(GD_object.elevation_grid_x, GD_object.elevation_grid_y)
+
+    point_stacks = []
+    for grid in dem_layers:
+        point_stack = np.hstack([np.reshape(X, (np.size(X), 1)),
+                                 np.reshape(Y, (np.size(Y), 1)),
+                                 np.reshape(grid, (np.size(grid), 1)),
+                                 np.reshape(XI, (np.size(XI), 1)),
+                                 np.reshape(YI, (np.size(YI), 1))])
+        point_stack = point_stack[point_stack[:, 2] > -99, :]
+        point_stacks.append(point_stack)
+
+    ############################################################################
+    # this part saves all the point columns grids to an nc file
+
+    if len(GD_object.icesat2_output_file)>2:
+        output_file = GD_object.icesat2_output_file
+    else:
+        output_file = os.path.join(GD_object.project_folder, GD_object.region_name, 'Elevation', 'Data',
+                                   GD_object.region_name + ' ICESat2 Elevation Points.nc')
+
+    ds = nc4.Dataset(output_file, "w", format="NETCDF4")
+
+    ds.createDimension("len_x", len(GD_object.elevation_grid_x))
+    xvar = ds.createVariable("x", "f4", ("len_x",))
+    xvar[:] = GD_object.elevation_grid_x
+
+    ds.createDimension("len_y", len(GD_object.elevation_grid_y))
+    yvar = ds.createVariable("y", "f4", ("len_y",))
+    yvar[:] = GD_object.elevation_grid_y
+
+    for dd in range(len(dem_dates)):
+        grp = ds.createGroup(dem_dates[dd])
+        grp.createDimension("n_points", np.shape(point_stacks[dd])[0])
+
+        xvar = grp.createVariable("x", "f4", ("n_points",))
+        yvar = grp.createVariable("y", "f4", ("n_points",))
+        pointsvar = grp.createVariable("points", "f4", ("n_points",))
+        xivar = grp.createVariable("xi", "f4", ("n_points",))
+        yivar = grp.createVariable("yi", "f4", ("n_points",))
+
+        xvar[:] = point_stacks[dd][:, 0]
+        yvar[:] = point_stacks[dd][:, 1]
+        pointsvar[:] = point_stacks[dd][:, 2]
+        xivar[:] = point_stacks[dd][:, 3]
+        yivar[:] = point_stacks[dd][:, 4]
+
+        grp.file_name = dem_file_names[dd]
+        grp.dec_yr = dem_decYrs[dd]
+
+    ds.close()
+
+    message = '        Outputting data to ' + output_file
+    GD_object.output_summary += '\n' + message
+    if GD_object.print_sub_outputs:
+        print(message)
 
 
 
@@ -357,34 +490,74 @@ def generate_ICESat2_dataset(GD_object):
     if GD_object.print_main_outputs:
         print(message)
 
-    # step 1: get a list of files for the region
-    message = '        Finding a list of ICESat-2 files which overlap the domain'
-    GD_object.output_summary += '\n' + message
-    if GD_object.print_sub_outputs:
-        print(message)
+    if not GD_object.save_icesat2_points_as_grids and not GD_object.save_icesat2_points_as_points:
+        raise ValueError('    Need to specify either save_icesat2_points_as_grids or save_icesat2_points_as_points')
 
-    dem_file_names, dem_file_links = find_icesat2_dem_files_in_domain(GD_object)
+    if GD_object.overwrite_existing_elevation_stacks:
+        continue_with_generation = True
+    else:
+        if GD_object.save_icesat2_points_as_grids:
+            if GD_object.region_name+' ICESat2 Elevation Grids.nc' in os.listdir(os.path.join(GD_object.project_folder,GD_object.region_name,'Elevation','Data')):
+                continue_with_generation = False
+                message = '        ICESat2 elevation compilation skipped for ' + GD_object.region_name + ' - already done'
+                GD_object.output_summary += '\n' + message
+                if GD_object.print_main_outputs:
+                    print(message)
+            else:
+                continue_with_generation = True
+        else:
+            if GD_object.region_name+' ICESat2 Elevation Points.nc' in os.listdir(os.path.join(GD_object.project_folder,GD_object.region_name,'Elevation','Data')):
+                continue_with_generation = False
+                message = '        ICESat2 elevation compilation skipped for ' + GD_object.region_name + ' - already done'
+                GD_object.output_summary += '\n' + message
+                if GD_object.print_main_outputs:
+                    print(message)
+            else:
+                continue_with_generation = True
 
-    message = '        Found '+str(len(dem_file_names))+' files'
-    GD_object.output_summary += '\n' + message
-    if GD_object.print_sub_outputs:
-        print(message)
 
-    if isinstance(GD_object.max_number_of_icesat2_files,int):
-        if len(dem_file_names)>GD_object.max_number_of_icesat2_files:
-            dem_file_names = dem_file_names[:GD_object.max_number_of_icesat2_files]
-            dem_file_links = dem_file_links[:GD_object.max_number_of_icesat2_files]
 
-    # step 2: download the data
-    message = '        Downloading files (if not already available)'
-    GD_object.output_summary += '\n' + message
-    if GD_object.print_sub_outputs:
-        print(message)
-    download_icesat2_files(GD_object,dem_file_names,dem_file_links)
+    if continue_with_generation:
 
-    print('        Resampling the ICESat2 data onto to the regional domain')
-    # step 3: stack the icesat2 data into layers
-    dem_layers, dem_dates, dem_decYrs = get_icesat2_layers(GD_object,dem_file_names)
+        # step 1: get a list of files for the region
+        message = '        Finding a list of ICESat-2 files which overlap the domain'
+        GD_object.output_summary += '\n' + message
+        if GD_object.print_sub_outputs:
+            print(message)
 
-    # step 4: save the icesat2 layer to an nc file
-    save_icesat2_layers(GD_object, dem_layers, dem_dates, dem_decYrs, dem_file_names)
+        dem_file_names, dem_file_links = find_icesat2_dem_files_in_domain(GD_object)
+
+        message = '        Found '+str(len(dem_file_names))+' files'
+        GD_object.output_summary += '\n' + message
+        if GD_object.print_sub_outputs:
+            print(message)
+
+        if isinstance(GD_object.max_number_of_icesat2_files,int):
+            if len(dem_file_names)>GD_object.max_number_of_icesat2_files:
+                dem_file_names = dem_file_names[:GD_object.max_number_of_icesat2_files]
+                dem_file_links = dem_file_links[:GD_object.max_number_of_icesat2_files]
+
+        # step 2: download the data
+
+        message = '        Downloading files (if not already available)'
+        GD_object.output_summary += '\n' + message
+        if GD_object.print_sub_outputs:
+            print(message)
+        download_icesat2_files(GD_object,dem_file_names,dem_file_links)
+
+        if GD_object.create_elevation_stacks:
+            message = '        Resampling the ICESat-2 data onto to the regional domain'
+            GD_object.output_summary += '\n' + message
+            if GD_object.print_sub_outputs:
+                print(message)
+            # step 3: stack the icesat2 data into layers
+            dem_layers, dem_dates, dem_decYrs, dem_filename_strings = get_icesat2_layers(GD_object,dem_file_names)
+
+            if len(dem_layers)>0:
+
+                # step 4: save the icesat2 layer to an nc file
+                if GD_object.save_icesat2_points_as_grids:
+                    save_icesat2_layers_as_grids(GD_object, dem_layers, dem_dates, dem_decYrs, dem_filename_strings)
+
+                if GD_object.save_icesat2_points_as_points:
+                    save_icesat2_layers_as_points(GD_object, dem_layers, dem_dates, dem_decYrs, dem_filename_strings)

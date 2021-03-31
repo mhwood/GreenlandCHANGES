@@ -3,9 +3,8 @@ from scipy.interpolate import interp2d
 import xarray as xr
 import numpy as np
 import os
-import gdal
+from osgeo import gdal
 import requests
-from toolbox.time import YMD_to_DecYr
 
 #######################################################################################
 #These are the scripts for finding a list of GIMP files
@@ -19,7 +18,7 @@ def find_gimp_dem_files_in_domain(GD_object):
             overlap = False
         return (overlap)
 
-    import changes.reference.gimp_domains as gid
+    from ...reference import gimp_domains as gid
 
     dem_files = []
     for row in range(6):
@@ -149,26 +148,29 @@ def get_gimp_layer(GD_object,dem_file_names):
                         if interp_val>-20:
                             dem_grid[row,col] = interp_val
 
-    dem_date = '20050630'
-    dem_decYr = YMD_to_DecYr(int(dem_date[:4]), int(dem_date[4:6]), int(dem_date[6:8]))
 
-    return(dem_grid, dem_date, dem_decYr)
+    return(dem_grid)
 
 
 #######################################################################################
 #These are the scripts for stacking the glacier fields into one
 
-def save_gimp_layers(GD_object,dem_layer, dem_date, dem_decYr, dem_file_names):
+def save_gimp_layers(GD_object,dem_layer, dem_file_names):
 
-    data_vars = {dem_date:(['y','x'],dem_layer)}
+    label = 'elevation'
+
+    data_vars = {label:(['y','x'],dem_layer)}
 
     swath = xr.Dataset(data_vars,coords={'y': GD_object.elevation_grid_y,'x': GD_object.elevation_grid_x})
 
-    swath[dem_date].attrs['file_name'] = ','.join(dem_file_names)
-    swath[dem_date].attrs['dec_yr'] = dem_decYr
-    swath[dem_date].attrs['note'] = 'DEM date is an approximate center date in 2002-2009'
+    swath[label].attrs['file_name'] = ','.join(dem_file_names)
 
-    output_file = os.path.join(GD_object.project_folder,GD_object.region_name,'Elevation','Data',GD_object.region_name+' GIMP Elevation Grids.nc')
+    if len(GD_object.gimp_output_file)>2:
+        output_file = GD_object.gimp_output_file
+    else:
+        output_file = os.path.join(GD_object.project_folder,GD_object.region_name,'Elevation','Data',GD_object.region_name+' GIMP Elevation Grid.nc')
+
+
     message = '        Outputting data to ' + output_file
     GD_object.output_summary += '\n' + message
     if GD_object.print_sub_outputs:
@@ -210,8 +212,8 @@ def generate_gimp_dataset(GD_object):
             print(message)
 
         # step 3: stack the gimp data into layers
-        dem_layer, dem_date, dem_decYr = get_gimp_layer(GD_object,dem_file_names)
+        dem_layer = get_gimp_layer(GD_object,dem_file_names)
 
         # print('        Saving the GIMP data as an nc file')
         # step 4: save the gimp layer to an nc file
-        save_gimp_layers(GD_object,dem_layer, dem_date, dem_decYr, dem_file_names)
+        save_gimp_layers(GD_object,dem_layer, dem_file_names)
