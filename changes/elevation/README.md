@@ -39,3 +39,13 @@ Studinger, M. 2014, updated 2020. IceBridge ATM L2 Icessn Elevation, Slope, and 
 #### ICESat-2:
 
 Smith, B., H. A. Fricker, A. Gardner, M. R. Siegfried, S. Adusumilli, B. M. Csathó, N. Holschuh, J. Nilsson, F. S. Paolo, and the ICESat-2 Science Team. 2020. ATLAS/ICESat-2 L3A Land Ice Height, Version 3. \[Indicate subset used\]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. doi: [https://doi.org/10.5067/ATLAS/ATL06.003](https://doi.org/10.5067/ATLAS/ATL06.003). \[Date Accessed\].
+
+#### TanDEM-X
+
+Wessel, B., Huber, M., Wohlfart, C., Marschalk, U., Kosmann, D., Roth, A.(2018): Accuracy Assessment of the Global TanDEM-X Digital Elevation Model with GPS Data.
+ISPRS Journal of Photogrammetry and Remote Sensing. [https://doi.org/10.1016/j.isprsjprs.2018.02.017](https://doi.org/10.1016/j.isprsjprs.2018.02.017)
+
+OR
+
+Rizzoli, P., Martone, M., Gonzalez, C., Wecklich, C., Borla Tridon, D., Bräutigam, B., Bachmann, M., Schulze, D., Fritz, T., Huber, M., Wessel, B., Krieger, G., Zink, M., and Moreira, A. (2017): Generation and performance assessment of the global TanDEM-X digital elevation model.
+ISPRS Journal of Photogrammetry and Remote Sensing. [https://doi.org/10.1016/j.isprsjprs.2017.08.008](https://doi.org/10.1016/j.isprsjprs.2017.08.008)
