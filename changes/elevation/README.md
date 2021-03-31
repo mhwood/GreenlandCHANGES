@@ -26,6 +26,10 @@ The following citations must be included with the use of any data collected from
 
 Porter, Claire; Morin, Paul; Howat, Ian; Noh, Myoung-Jon; Bates, Brian; Peterman, Kenneth; Keesey, Scott; Schlenk, Matthew; Gardiner, Judith; Tomko, Karen; Willis, Michael; Kelleher, Cole; Cloutier, Michael; Husby, Eric; Foga, Steven; Nakamura, Hitomi; Platson, Melisa; Wethington, Michael, Jr.; Williamson, Cathleen; Bauer, Gregory; Enos, Jeremy; Arnold, Galen; Kramer, William; Becker, Peter; Doshi, Abhijit; D’Souza, Cristelle; Cummens, Pat; Laurier, Fabien; Bojesen, Mikkel, 2018, “ArcticDEM”, [https://doi.org/10.7910/DVN/OHHUKH](https://doi.org/10.7910/DVN/OHHUKH), Harvard Dataverse, V1, \[Date Accessed\].
 
+#### ASTER
+
+NASA/METI/AIST/Japan Spacesystems and U.S./Japan ASTER Science Team. ASTER Global Digital Elevation Model V003. 2019, distributed by NASA EOSDIS Land Processes DAAC, [https://doi.org/10.5067/ASTER/ASTGTM.003](https://doi.org/10.5067/ASTER/ASTGTM.003). \[Date Accessed\].
+
 #### Cryosat-2
 
 Gourmelen, N. & Weissgerber, F. "Swath elevation from CryoSat-2 over the Greenland ice Sheet, 2011-2016" (2018) Polar Data Centre, Natural Environment Research Council, UK Research & Innovation, UK. [doi:10.5285/d762710b-562b-41a6-b9b4-adb26bfad4c6](https://doi.org/10.5285/d762710b-562b-41a6-b9b4-adb26bfad4c6)
@@ -46,9 +50,17 @@ Studinger, M. 2014, updated 2020. IceBridge ATM L2 Icessn Elevation, Slope, and 
 
 Paden, J., J. Li, C. Leuschen, F. Rodriguez-Morales, and R. Hale. 2010, updated 2019. IceBridge MCoRDS L2 Ice Thickness, Version 1. [Indicate subset used]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. doi: [https://doi.org/10.5067/GDQ0CUCVTE2Q](https://doi.org/10.5067/GDQ0CUCVTE2Q). [Date Accessed].
 
+#### ICESAT
+
+Zwally, H. J., R. Schutz, D. Hancock, and J. Dimarzio. 2014. GLAS/ICESat L2 Global Antarctic and Greenland Ice Sheet Altimetry Data (HDF5), Version 34. [Indicate subset used]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. doi: [https://doi.org/10.5067/ICESAT/GLAS/DATA209](https://doi.org/10.5067/ICESAT/GLAS/DATA209). [Date Accessed].
+
 #### ICESat-2:
 
 Smith, B., H. A. Fricker, A. Gardner, M. R. Siegfried, S. Adusumilli, B. M. Csathó, N. Holschuh, J. Nilsson, F. S. Paolo, and the ICESat-2 Science Team. 2020. ATLAS/ICESat-2 L3A Land Ice Height, Version 3. \[Indicate subset used\]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. doi: [https://doi.org/10.5067/ATLAS/ATL06.003](https://doi.org/10.5067/ATLAS/ATL06.003). \[Date Accessed\].
+
+#### SPIRIT
+
+Korona, J., Berthier, E., Bernard, M., Rémy, F., & Thouvenot, E. (2009). SPIRIT. SPOT 5 stereoscopic survey of polar ice: reference images and topographies during the fourth International Polar Year (2007–2009). ISPRS Journal of Photogrammetry and Remote Sensing. [https://doi.org/10.1016/j.isprsjprs.2008.10.005](https://doi.org/10.1016/j.isprsjprs.2008.10.005)
 
 #### TanDEM-X
 
