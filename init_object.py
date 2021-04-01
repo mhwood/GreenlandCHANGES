@@ -115,6 +115,24 @@ class GreenlandCHANGES:
         self.podaac_password = ''
         self.glistin_output_file = ''
 
+        # Operation Icebridge - LVIS
+        self.compile_icebridge_lvis_data = True
+        self.download_new_icebridge_lvis_data = True
+        self.max_number_of_icebridge_lvis_files = 'all'
+        self.icebridge_lvis_output_file = ''
+
+        # Operation Icebridge - ATM
+        self.compile_icebridge_atm_data = True
+        self.download_new_icebridge_atm_data = True
+        self.max_number_of_icebridge_atm_files = 'all'
+        self.icebridge_atm_output_file = ''
+
+        # Operation Icebridge - MCoRDS
+        self.compile_icebridge_mcords_data = True
+        self.download_new_icebridge_mcords_data = True
+        self.max_number_of_icebridge_mcords_files = 'all'
+        self.icebridge_mcords_output_file = ''
+
         # ICESat-2
         self.compile_icesat2_data = True
         self.download_new_icesat2_data = True
@@ -123,10 +141,7 @@ class GreenlandCHANGES:
         self.save_icesat2_points_as_points = True
         self.icesat2_output_file = ''
 
-        # Operation Icebridge
-        self.compile_icebridge_data = True
-        self.download_new_icebridge_data = True
-        self.max_number_of_icebridge_files = 'all'
+
 
     def set_custom_extents(self,extents):
         self.extents = extents
@@ -190,12 +205,9 @@ class GreenlandCHANGES:
             print('    resample_high_resolution_arcticDEM_data: ', self.resample_high_resolution_arcticDEM_data)
             print('    max_number_of_arcticDEM_files: ', self.max_number_of_arcticDEM_files)
 
-    def print_icesat2_parameters(self):
-        print('ICESat-2 Parameters:')
-        print('    compile_icesat2_data: ', self.compile_icesat2_data)
-        if self.compile_icesat2_data:
-            print('    download_new_icesat2_data: ', self.download_new_icesat2_data)
-            print('    max_number_of_icesat2_files: ', self.max_number_of_icesat2_files)
+    def print_gimp_parameters(self):
+        print('GIMP Parameters:')
+        print('    compile_gimp_data: ', self.compile_gimp_data)
 
     def print_glistin_parameters(self):
         print('GLISTIN-A Parameters:')
@@ -206,16 +218,25 @@ class GreenlandCHANGES:
             print('    podaac_username: ',self.podaac_username)
             print('    podaac_password: ', self.podaac_password)
 
-    def print_gimp_parameters(self):
-        print('GIMP Parameters:')
-        print('    compile_gimp_data: ', self.compile_gimp_data)
-
     def print_icebridge_parameters(self):
         print('Operation Icebridge Parameters:')
         print('    compile_icebridge_data: ', self.compile_icebridge_data)
         if self.compile_icebridge_data:
             print('    download_new_icebridge_data: ', self.download_new_icebridge_data)
             print('    max_number_of_icebridge_files: ', self.max_number_of_icebridge_files)
+
+    def print_icesat2_parameters(self):
+        print('ICESat-2 Parameters:')
+        print('    compile_icesat2_data: ', self.compile_icesat2_data)
+        if self.compile_icesat2_data:
+            print('    download_new_icesat2_data: ', self.download_new_icesat2_data)
+            print('    max_number_of_icesat2_files: ', self.max_number_of_icesat2_files)
+
+
+
+
+
+
 
     # ####################################################################################################################
     # # these are functions to set parameters to run the retrieval and regridding scripts

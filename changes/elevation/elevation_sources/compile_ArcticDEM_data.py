@@ -451,12 +451,29 @@ def generate_ArcticDEM_dataset(GD_object):
     download_and_resample_arcticdem_files(GD_object,dem_files)
 
     if GD_object.create_elevation_stacks:
-        a=1
-        # step 3: stack the arcticdem data into layers
-        print('        Subsetting the resampled ArcticDEM data onto to the regional domain')
-        print('        Resampling the ArcticDEM data onto to the regional domain')
-        dem_layers, dem_dates, dem_decYrs, dem_file_strings = get_arcticdem_layers(GD_object,dem_files)
 
-        # step 4: save the arcticdem layer to an nc file
-        save_arcticdem_layers(GD_object,dem_layers, dem_dates, dem_decYrs, dem_file_strings)
+
+
+        if GD_object.overwrite_existing_elevation_data:
+            continue_to_stack = True
+        else:
+            if len(GD_object.arcticdem_output_file) > 2:
+                output_file = GD_object.arcticdem_output_file
+            else:
+                output_file = os.path.join(GD_object.project_folder, GD_object.region_name, 'Elevation', 'Data',
+                                           GD_object.region_name + ' ArcticDEM Elevation Grids.nc')
+            if os.path.isfile(output_file):
+                continue_to_stack = False
+            else:
+                continue_to_stack = True
+
+        if continue_to_stack:
+
+            # step 3: stack the arcticdem data into layers
+            print('        Subsetting the resampled ArcticDEM data onto to the regional domain')
+            print('        Resampling the ArcticDEM data onto to the regional domain')
+            dem_layers, dem_dates, dem_decYrs, dem_file_strings = get_arcticdem_layers(GD_object,dem_files)
+
+            # step 4: save the arcticdem layer to an nc file
+            save_arcticdem_layers(GD_object,dem_layers, dem_dates, dem_decYrs, dem_file_strings)
 
