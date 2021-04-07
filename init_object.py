@@ -141,6 +141,14 @@ class GreenlandCHANGES:
         self.save_icesat2_points_as_points = True
         self.icesat2_output_file = ''
 
+        # TanDEMX
+        self.compile_tandemx_data = True
+        self.download_new_tandemx_data = True
+        self.max_number_of_tandemx_files = 'all'
+        self.tandemx_output_file = ''
+        self.tandemx_username = ''
+        self.tandemx_password = ''
+
 
 
     def set_custom_extents(self,extents):
@@ -157,7 +165,8 @@ class GreenlandCHANGES:
         self.compile_gimp_data = False
         self.compile_glistin_data = False
         self.compile_icesat2_data = False
-        self.compile_icebridge_data = False
+        self.compile_icebridge_atm_data = False
+        self.compile_tandemx_data = False
 
     # ####################################################################################################################
     # # these are functions to print out parameters for the user to view
@@ -195,6 +204,7 @@ class GreenlandCHANGES:
             print('        compile_glistin_data:', self.compile_glistin_data)
             print('        compile_icesat2_data:', self.compile_icesat2_data)
             print('        compile_icebridge_data:', self.compile_icebridge_data)
+            print('        compile_tandemx_data:', self.compile_tandemx_data)
 
     def print_arcticDEM_parameters(self):
         print('ArcticDEM Parameters:')
@@ -231,6 +241,13 @@ class GreenlandCHANGES:
         if self.compile_icesat2_data:
             print('    download_new_icesat2_data: ', self.download_new_icesat2_data)
             print('    max_number_of_icesat2_files: ', self.max_number_of_icesat2_files)
+
+    def print_tandemx_parameters(self):
+        print('ICESat-2 Parameters:')
+        print('    compile_tandemx_data: ', self.compile_tandemx_data)
+        if self.compile_tandemx_data:
+            print('    download_new_tandemx_data: ', self.download_new_tandemx_data)
+            print('    max_number_of_tandemx_files: ', self.max_number_of_tandemx_files)
 
 
 
