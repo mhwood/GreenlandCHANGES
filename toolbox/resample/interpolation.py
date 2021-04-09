@@ -30,8 +30,8 @@ def reproject_and_interpolate_onto_grid(source_x,source_y,source_grid,source_eps
 
     if print_status_messages:
         print('                    Sampling the interpolation object on the grid')
-    X = np.reshape(points[:, 1], np.shape(X))
-    Y = np.reshape(points[:, 0], np.shape(X))
+    X = np.reshape(points[:, 0], np.shape(X))
+    Y = np.reshape(points[:, 1], np.shape(X))
     grid = -99*np.ones_like(X)
 
     # spell this path out to make sure corners are preserved
@@ -51,6 +51,11 @@ def reproject_and_interpolate_onto_grid(source_x,source_y,source_grid,source_eps
                      eastern_line,
                      northern_line,
                      western_line])
+
+    # plt.plot(points[:,0],points[:,1],'k.')
+    # plt.plot(bbox[:,0],bbox[:,1],'r-')
+    # plt.show()
+
     source_path = mplPath.Path(bbox)
 
     for yi in range(np.shape(X)[0]):
@@ -63,14 +68,13 @@ def reproject_and_interpolate_onto_grid(source_x,source_y,source_grid,source_eps
                 print('                      75% complete...')
         for xi in range(np.shape(X)[1]):
             # make sure the point is inside the boundary
-            # (interpolation seems to give "valid" valid outside due to reprojection)
+            # (interpolation seems to give "valid" values outside due to reprojection)
+            # is_inside = source_path.contains_point((X[yi,xi],Y[yi,xi]))
+            # int_val = set_int(X[yi, xi], Y[yi, xi])
             if source_path.contains_point((X[yi,xi],Y[yi,xi])):
                 int_val = set_int(X[yi,xi],Y[yi,xi])
-                # print(X[yi,xi],Y[yi,xi],int_val)
                 if not np.isnan(int_val):
                     grid[yi,xi] = int_val
-
-    # make points outside of the
 
     return(grid)
 

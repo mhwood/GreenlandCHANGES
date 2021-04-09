@@ -56,10 +56,11 @@ def find_tandemx_dem_files_from_dict(GD_object):
                          [tdx_extent[0], tdx_extent[3]],
                          [tdx_extent[0], tdx_extent[1]]])
         bbox = reproject_polygon(bbox,4326,3413)
-        bbox_tmp = np.copy(bbox)
-        bbox_tmp[:,0] = bbox[:,1]
-        bbox_tmp[:,1] = bbox[:,0]
-        bboxWKTtdx = bboxToWKT(bbox_tmp)
+        # bbox_tmp = np.copy(bbox)
+        #         # bbox_tmp[:,0] = bbox[:,1]
+        #         # bbox_tmp[:,1] = bbox[:,0]
+        # print(bbox)
+        bboxWKTtdx = bboxToWKT(bbox)
         poly2 = ogr.CreateGeometryFromWkt(bboxWKTtdx)
         intersection = poly1.Intersection(poly2)
         intersection = intersection.ExportToWkt()
@@ -203,10 +204,7 @@ def resample_tandemx_tile(GD_object, tile_name, file_name):
                      [np.min(demX), np.max(demY)]])
     # bbox = series_to_N_points(bbox, 100)
     bbox = reproject_polygon(bbox,4326,3413)
-    bbox_tmp = np.copy(bbox)
-    bbox_tmp[:, 0] = bbox[:, 1]
-    bbox_tmp[:, 1] = bbox[:, 0]
-    bbox = bbox_tmp
+
     min_X = np.min(bbox[:, 0])
     # max_X = min_X+20000
     max_X = np.max(bbox[:, 0])
@@ -246,39 +244,59 @@ def resample_tandemx_tile(GD_object, tile_name, file_name):
 
 def download_and_resample_tandemx_files(GD_object,dem_files):
 
-    for dd in range(len(dem_files)):
-        dem_file = dem_files[dd]
-        tile_name = dem_file[0]
-        file_name = dem_file[1]
-        url = dem_file[2]+'.zip'
-        if GD_object.print_sub_outputs:
-            print('            Checking file '+file_name+' ('+str(tile_name)+', '+str(dd+1)+' of '+str(len(dem_files))+')')
+    if GD_object.tandemx_username == '' or GD_object.tandemx_password == '':
+        print('Please identify your DLR username and password with the following commands in the init_object.py file:'+
+                   '\n    GC.tandemx_username = *********'+
+                   '\n    GC.tandemx_password = *********'+
+                   '\n    Note: these credentials are obtained from geoservice.dlr.de.')
+        continue_to_stack = False
 
-        #check to see if the file needs to be downloaded
-        if GD_object.overwrite_existing_elevation_data:
-            download_file=True
-            resampled_data_present=False
-        else:
-            download_file,resampled_data_present = check_file_download(GD_object,file_name,tile_name)
+    else:
+        continue_to_stack = True
 
-        #downloading...
-        if download_file:
-            if GD_object.print_sub_outputs:
-                print('              Downloading file...')
-            download_tandemx_tile(GD_object, tile_name, file_name, url)
-        else:
-            if GD_object.print_sub_outputs:
-                print('              File already obtained')
+        if 'TanDEMX' not in os.listdir(os.path.join(GD_object.data_folder, 'Elevation')):
+            os.mkdir(os.path.join(GD_object.data_folder, 'Elevation','TanDEMX'))
+        if 'Data' not in os.listdir(os.path.join(GD_object.data_folder, 'Elevation', 'TanDEMX')):
+            os.mkdir(os.path.join(GD_object.data_folder, 'Elevation', 'TanDEMX', 'Data'))
+        if '90m_tiles' not in os.listdir(os.path.join(GD_object.data_folder, 'Elevation','TanDEMX','Data')):
+            os.mkdir(os.path.join(GD_object.data_folder, 'Elevation','TanDEMX','Data','90m_tiles'))
+        if 'Regridded_50m_tiles' not in os.listdir(os.path.join(GD_object.data_folder, 'Elevation','TanDEMX','Data')):
+            os.mkdir(os.path.join(GD_object.data_folder, 'Elevation','TanDEMX','Data','Regridded_50m_tiles'))
 
-        #resample the data if its not already done
-        if not resampled_data_present:
+        for dd in range(len(dem_files)):
+            dem_file = dem_files[dd]
+            tile_name = dem_file[0]
+            file_name = dem_file[1]
+            url = dem_file[2]+'.zip'
             if GD_object.print_sub_outputs:
-                print('              Downsampling file... ')
-            resample_tandemx_tile(GD_object, tile_name, file_name)
-            resampled_data_present=True
-        else:
-            if GD_object.print_sub_outputs:
-                print('              File already resampled')
+                print('            Checking file '+file_name+' ('+str(tile_name)+', '+str(dd+1)+' of '+str(len(dem_files))+')')
+
+            #check to see if the file needs to be downloaded
+            if GD_object.overwrite_existing_elevation_data:
+                download_file=True
+                resampled_data_present=False
+            else:
+                download_file,resampled_data_present = check_file_download(GD_object,file_name,tile_name)
+
+            #downloading...
+            if download_file:
+                if GD_object.print_sub_outputs:
+                    print('              Downloading file...')
+                download_tandemx_tile(GD_object, tile_name, file_name, url)
+            else:
+                if GD_object.print_sub_outputs:
+                    print('              File already obtained')
+
+            #resample the data if its not already done
+            if not resampled_data_present:
+                if GD_object.print_sub_outputs:
+                    print('              Downsampling file... ')
+                resample_tandemx_tile(GD_object, tile_name, file_name)
+                resampled_data_present=True
+            else:
+                if GD_object.print_sub_outputs:
+                    print('              File already resampled')
+    return(continue_to_stack)
 
 #######################################################################################
 #These are the scripts for creating the layers in the TanDEMX data
@@ -485,9 +503,9 @@ def generate_TanDEMX_dataset(GD_object):
     if GD_object.print_sub_outputs:
         print(message)
 
-    download_and_resample_tandemx_files(GD_object,dem_files)
+    continue_to_stack = download_and_resample_tandemx_files(GD_object,dem_files)
 
-    if GD_object.create_elevation_stacks:
+    if GD_object.create_elevation_stacks and continue_to_stack:
 
         if GD_object.overwrite_existing_elevation_data:
             continue_to_stack = True

@@ -110,7 +110,7 @@ def downloadStrip(GD_object,dataFolder,year,dem_file): #
 def download_glistin_files(GD_object,dem_files):
 
     if GD_object.podaac_username == '' or GD_object.podaac_password == '':
-        print('Please identify your PO.DAAC username and password with the following commands in the init.py file:'+
+        print('Please identify your PO.DAAC username and password with the following commands in the init_object.py file:'+
                    '\n    GC.podaac_username = *********'+
                    '\n    GC.podaac_password = *********'+
                    '\n    Note: these credentials are NOT the same as your EARTHDATA credentials.'+
