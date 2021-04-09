@@ -503,8 +503,25 @@ def generate_Icebridge_ATM_dataset(GD_object):
             if GD_object.print_sub_outputs:
                 print(message)
 
-        # step 3: stack the icebridge_atm data into layers
-        dem_layers, dem_dates, dem_decYrs, dem_filename_strings = get_icebridge_atm_layers(GD_object,dem_file_names, dem_file_dates, dem_file_sensors)
+            if GD_object.overwrite_existing_elevation_data:
+                continue_to_stack = True
+            else:
+                if len(GD_object.icebridge_atm_output_file) > 2:
+                    output_file = GD_object.icebridge_atm_output_file
+                else:
+                    output_file = os.path.join(GD_object.project_folder, GD_object.region_name, 'Elevation', 'Data',
+                                               GD_object.region_name + ' IceBridge ATM Elevation Grids.nc')
+                if os.path.isfile(output_file):
+                    continue_to_stack = False
+                else:
+                    continue_to_stack = True
 
-        # step 4: save the icebridge_atm layer to an nc file
-        save_icebridge_atm_layers_as_points(GD_object,dem_layers, dem_dates, dem_decYrs, dem_filename_strings)
+            if continue_to_stack:
+
+                # step 3: stack the icebridge_atm data into layers
+                dem_layers, dem_dates, dem_decYrs, dem_filename_strings = get_icebridge_atm_layers(GD_object,dem_file_names, dem_file_dates, dem_file_sensors)
+
+                if len(dem_layers)>0:
+
+                    # step 4: save the icebridge_atm layer to an nc file
+                    save_icebridge_atm_layers_as_points(GD_object,dem_layers, dem_dates, dem_decYrs, dem_filename_strings)
