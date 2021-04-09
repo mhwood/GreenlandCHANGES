@@ -194,9 +194,12 @@ def resample_tandemx_tile(GD_object, tile_name, file_name):
     transform = ds.GetGeoTransform()
     ds = None
 
-
     demX = np.arange(transform[0], transform[0] + transform[1] * np.shape(dem)[1], transform[1])
+    if len(demX)>np.shape(dem)[1]: # this happens sometimes
+        demX=demX[:np.shape(dem)[1]]
     demY = np.arange(transform[3], transform[3] + transform[5] * np.shape(dem)[0], transform[5])
+    if len(demY)>np.shape(dem)[0]: # this happens sometimes
+        demY=demY[:np.shape(dem)[0]]
 
     bbox = np.array([[np.min(demX), np.min(demY)],
                      [np.max(demX), np.min(demY)],
