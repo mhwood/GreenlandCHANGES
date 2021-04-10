@@ -141,6 +141,11 @@ class GreenlandCHANGES:
         self.save_icesat2_points_as_points = True
         self.icesat2_output_file = ''
 
+        # KMS
+        self.compile_kms_data = True
+        self.kms_output_file = ''
+        self.save_tif_copy_of_kms_dem = True
+
         # TanDEMX
         self.compile_tandemx_data = True
         self.download_new_tandemx_data = True
@@ -166,6 +171,7 @@ class GreenlandCHANGES:
         self.compile_glistin_data = False
         self.compile_icesat2_data = False
         self.compile_icebridge_atm_data = False
+        self.compile_kms_data = False
         self.compile_tandemx_data = False
 
     # ####################################################################################################################
@@ -202,8 +208,9 @@ class GreenlandCHANGES:
             print('        compile_arcticDEM_data:', self.compile_arcticDEM_data)
             print('        compile_gimp_data:', self.compile_gimp_data)
             print('        compile_glistin_data:', self.compile_glistin_data)
-            print('        compile_icesat2_data:', self.compile_icesat2_data)
             print('        compile_icebridge_data:', self.compile_icebridge_data)
+            print('        compile_icesat2_data:', self.compile_icesat2_data)
+            print('        compile_kms_data:', self.compile_kms_data)
             print('        compile_tandemx_data:', self.compile_tandemx_data)
 
     def print_arcticDEM_parameters(self):
@@ -241,6 +248,13 @@ class GreenlandCHANGES:
         if self.compile_icesat2_data:
             print('    download_new_icesat2_data: ', self.download_new_icesat2_data)
             print('    max_number_of_icesat2_files: ', self.max_number_of_icesat2_files)
+
+    def print_kms_parameters(self):
+        print('KMS Parameters:')
+        print('    compile_kms_data: ', self.compile_kms_data)
+        if self.compile_kms_data:
+            print('    kms_output_file: ', self.kms_output_file)
+            print('    save_tif_copy_of_kms_dem: ', self.save_tif_copy_of_kms_dem)
 
     def print_tandemx_parameters(self):
         print('ICESat-2 Parameters:')

@@ -10,18 +10,18 @@ import matplotlib.path as mplPath
 
 def reproject_and_interpolate_onto_grid(source_x,source_y,source_grid,source_epsg,
                                         dest_x,dest_y,dest_epsg,
-                                        print_status_messages=False):
+                                        print_status_messages=False, interpolation_type = 'linear'):
 
     # plt.contourf(source_x,source_y,source_grid)
     # plt.show()
 
     if print_status_messages:
         print('                    Creating the interpolation object')
-    set_int = interp2d(source_x,source_y,source_grid, kind='linear')
+    set_int = interp2d(source_x,source_y,source_grid, kind=interpolation_type)
 
     X, Y = np.meshgrid(dest_x,dest_y)
     points = np.hstack([np.reshape(X, (np.size(X), 1)),
-                        np.reshape(Y, (np.size(Y), 1))])
+                        np.reshape(Y, (np.size(Y), 1))]).astype(float)
 
     if source_epsg!=dest_epsg:
         if print_status_messages:

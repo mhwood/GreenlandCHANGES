@@ -5,10 +5,11 @@ import requests
 import os
 from osgeo import gdal
 from osgeo import osr
-import xarray as xr
+import netCDF4 as nc4
 import matplotlib.pyplot as plt
 from ....toolbox.time import YMD_to_DecYr
 from ....toolbox.resample.interpolation import reproject_and_interpolate_onto_grid
+from ....toolbox.reprojection import reproject_polygon
 
 def read_kms_dem(kms_dem_file_path):
     lon_0 = -75
@@ -37,6 +38,9 @@ def read_kms_dem(kms_dem_file_path):
 #These are the scripts for downloading the list of arctic dem files
 
 def check_file_download(GD_object):
+
+    if 'KMS' not in os.listdir(os.path.join(GD_object.data_folder, 'Elevation')):
+        os.mkdir(os.path.join(GD_object.data_folder, 'Elevation','KMS'))
 
     # check if the data is there
     download_file = True
@@ -94,18 +98,90 @@ def download_and_resave_kms_file(GD_object):
 #######################################################################################
 #These are the scripts for creating the layers in the KMS data
 
+def get_kms_error_layer(lon,lat,grid):
+
+    Lon, Lat = np.meshgrid(lon,lat)
+
+    points = np.hstack([np.reshape(Lon, (np.size(Lon), 1)),
+                        np.reshape(Lat, (np.size(Lon), 1))]).astype(float)
+    points = reproject_polygon(points, 4326, 3413)
+
+    X = np.reshape(points[:, 0], np.shape(Lon))
+    Y = np.reshape(points[:, 1], np.shape(Lon))
+
+    y_slope = np.zeros_like(grid)
+    y_slope[1:-1,1:-1] = (grid[:-2,1:-1] - grid[2:,1:-1])/ (Y[:-2,1:-1] - Y[2:,1:-1])
+
+    x_slope = np.zeros_like(grid)
+    x_slope[1:-1,1:-1] = (grid[1:-1,:-2] - grid[1:-1,2:])/ (X[1:-1,:-2] - X[1:-1,2:])
+
+    slope = (y_slope**2 + x_slope**2)**0.5
+    slope = np.arctan(slope)
+
+    # C = plt.contourf(Lon,Lat,slope)
+    # plt.colorbar(C)
+    # plt.show()
+
+    # this table is from Ekholm et al 1996
+    surface_slope_to_rms_error={0.0:1.87,
+                                0.1:2.88,
+                                0.2:6.69,
+                                0.3:11.69,
+                                0.4:13.95,
+                                0.5:21.18,
+                                0.6:22.39,
+                                0.7:38.23,
+                                0.8:50.17,
+                                0.9:60.54,
+                                1.0:63.23,
+                                1.1:112.84}
+
+    error = np.zeros_like(slope)
+    slope = np.round(slope,1)
+    points_adjusted = 0 # this is to check all points have been accounted for
+
+    for level in np.arange(0,1.1,0.1):
+        level = np.round(level,1)
+        points_adjusted+=np.size(slope[slope==level])
+        error[slope==level] = surface_slope_to_rms_error[level]
+    error[slope>1] = surface_slope_to_rms_error[1.1]
+
+    # print(points_adjusted,np.size(error))
+
+    # plt.subplot(1,2,1)
+    # C = plt.contourf(Lon, Lat, slope,100)
+    # plt.colorbar(C)
+    # plt.subplot(1, 2, 2)
+    # C2 = plt.contourf(Lon,Lat,error,100)
+    # plt.colorbar(C2)
+    # plt.show()
+
+    return(error)
+
+
+
 def get_kms_layer(GD_object):
 
     kms_file = os.path.join(GD_object.data_folder, 'Elevation', 'KMS', 'grnlnd_dem_wgs84.dat')
     lon,lat,grid,lon_spacing,lat_spacing = read_kms_dem(kms_file)
 
+    get_kms_error_layer(lon, lat, grid)
+
+    dem_layer = center_time_str = dem_decYr = []
+
     dem_layer = reproject_and_interpolate_onto_grid(lon,lat,grid, 4326,
                                                          GD_object.elevation_grid_x,GD_object.elevation_grid_y,
-                                                         3413, print_status_messages=True)
-    plt.imshow(dem_layer)
-    plt.show()
+                                                         3413, print_status_messages=True, interpolation_type='linear')
 
-    start_datetime = datetime(1991,1,1)
+    full_error_layer = get_kms_error_layer(lon,lat,grid)
+
+    error_layer = reproject_and_interpolate_onto_grid(lon, lat, full_error_layer, 4326,
+                                                    GD_object.elevation_grid_x, GD_object.elevation_grid_y,
+                                                    3413, print_status_messages=True, interpolation_type='linear')
+    # plt.imshow(dem_layer)
+    # plt.show()
+
+    start_datetime = datetime(1991, 1, 1)
     stop_datetime = datetime(1995, 12, 31)
 
     center_time = start_datetime + (stop_datetime - start_datetime) / 2
@@ -113,33 +189,46 @@ def get_kms_layer(GD_object):
     stop_time_str = str(stop_datetime.year) + '{:02d}'.format(stop_datetime.month) + '{:02d}'.format(stop_datetime.day)
     center_time_str = str(center_time.year) + '{:02d}'.format(center_time.month) + '{:02d}'.format(center_time.day)
 
-    print('Check the exact dates in Ekholm, 1996')
-
     dem_decYr = YMD_to_DecYr(int(center_time_str[:4]), int(center_time_str[4:6]), int(center_time_str[6:8]))
+    dem_decYr_start = YMD_to_DecYr(int(start_time_str[:4]), int(start_time_str[4:6]), int(start_time_str[6:8]))
+    dem_decYr_end = YMD_to_DecYr(int(stop_time_str[:4]), int(stop_time_str[4:6]), int(stop_time_str[6:8]))
 
-    print(dem_decYr)
-    return(dem_layer, center_time_str, dem_decYr)
+    return(dem_layer, error_layer, center_time_str, dem_decYr, dem_decYr_start, dem_decYr_end)
 
 #######################################################################################
 #These are the scripts to save the layers as a stack
 
-def save_kms_layer(GD_object,dem_layer, dem_date, dem_decYr, url):
-
-    data_vars = {}
-    data_vars[dem_date]=(['y','x'],dem_layer)
-
-    swath = xr.Dataset(data_vars,coords={'y': GD_object.elevation_grid_y,'x': GD_object.elevation_grid_x})
-
-    swath[dem_date].attrs['file_name'] = url
-    swath[dem_date].attrs['dec_yr'] = dem_decYr
+def save_kms_layer(GD_object,dem_layer, error_layer, dem_date, dem_decYr, dem_decYr_start, dem_decYr_end, url):
 
     if len(GD_object.kms_output_file)>2:
         output_file = GD_object.kms_output_file
     else:
         output_file = os.path.join(GD_object.project_folder,GD_object.region_name,'Elevation','Data',GD_object.region_name+' KMS Elevation Grids.nc')
-    print('        Outputting data to ' + output_file)
+    if GD_object.print_main_outputs:
+        print('        Outputting data to ' + output_file)
 
-    swath.to_netcdf(output_file)
+    ds = nc4.Dataset(output_file,'w')
+    ds.createDimension('x',len(GD_object.elevation_grid_x))
+    ds.createDimension('y', len(GD_object.elevation_grid_y))
+
+    xvar = ds.createVariable('x','f4',('x',))
+    xvar[:] = GD_object.elevation_grid_x
+    yvar = ds.createVariable('y', 'f4', ('y',))
+    yvar[:] = GD_object.elevation_grid_y
+
+    grp = ds.createGroup(dem_date)
+
+    demVar = grp.createVariable('DEM','f4',('y','x'))
+    demVar[:,:] = dem_layer
+    errVar = grp.createVariable('error', 'f4', ('y', 'x'))
+    errVar[:, :] = error_layer
+
+    ds.file_name = url
+    ds.dec_yr = dem_decYr
+    ds.dec_yr_start = dem_decYr_start
+    ds.dec_yr_end = dem_decYr_end
+
+    ds.close()
 
 #######################################################################################
 #This is the main script to run the whole process
@@ -178,8 +267,8 @@ def generate_kms_dataset(GD_object):
 
             # step 3: stack the kms data into layers
             print('        Interpolating the KMS DEM onto to the regional domain')
-            dem_layer, dem_dates, dem_decYr = get_kms_layer(GD_object)
+            dem_layer, error_layer, dem_date, dem_decYr, dem_decYr_start, dem_decYr_end = get_kms_layer(GD_object)
 
             # step 4: save the kms layer to an nc file
-            save_kms_layer(GD_object,dem_layer, dem_dates, dem_decYr, url)
+            save_kms_layer(GD_object,dem_layer, error_layer, dem_date, dem_decYr, dem_decYr_start, dem_decYr_end, url)
 
