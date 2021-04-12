@@ -120,6 +120,7 @@ class GreenlandCHANGES:
         self.download_new_icebridge_lvis_data = True
         self.max_number_of_icebridge_lvis_files = 'all'
         self.icebridge_lvis_output_file = ''
+        self.remove_full_lvis_files = True
 
         # Operation Icebridge - ATM
         self.compile_icebridge_atm_data = True
@@ -171,6 +172,7 @@ class GreenlandCHANGES:
         self.compile_glistin_data = False
         self.compile_icesat2_data = False
         self.compile_icebridge_atm_data = False
+        self.compile_icebridge_lvis_data = False
         self.compile_kms_data = False
         self.compile_tandemx_data = False
 
