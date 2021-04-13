@@ -128,11 +128,13 @@ class GreenlandCHANGES:
         self.max_number_of_icebridge_atm_files = 'all'
         self.icebridge_atm_output_file = ''
 
-        # Operation Icebridge - MCoRDS
-        self.compile_icebridge_mcords_data = True
-        self.download_new_icebridge_mcords_data = True
-        self.max_number_of_icebridge_mcords_files = 'all'
-        self.icebridge_mcords_output_file = ''
+        # ICESat
+        self.compile_icesat_data = True
+        self.download_new_icesat_data = True
+        self.max_number_of_icesat_files = 'all'
+        self.save_icesat_points_as_grids = False
+        self.save_icesat_points_as_points = True
+        self.icesat_output_file = ''
 
         # ICESat-2
         self.compile_icesat2_data = True
@@ -170,6 +172,7 @@ class GreenlandCHANGES:
         self.compile_arcticDEM_data = False
         self.compile_gimp_data = False
         self.compile_glistin_data = False
+        self.compile_icesat_data = False
         self.compile_icesat2_data = False
         self.compile_icebridge_atm_data = False
         self.compile_icebridge_lvis_data = False
@@ -211,6 +214,7 @@ class GreenlandCHANGES:
             print('        compile_gimp_data:', self.compile_gimp_data)
             print('        compile_glistin_data:', self.compile_glistin_data)
             print('        compile_icebridge_data:', self.compile_icebridge_data)
+            print('        compile_icesat_data:', self.compile_icesat_data)
             print('        compile_icesat2_data:', self.compile_icesat2_data)
             print('        compile_kms_data:', self.compile_kms_data)
             print('        compile_tandemx_data:', self.compile_tandemx_data)
@@ -243,6 +247,13 @@ class GreenlandCHANGES:
         if self.compile_icebridge_data:
             print('    download_new_icebridge_data: ', self.download_new_icebridge_data)
             print('    max_number_of_icebridge_files: ', self.max_number_of_icebridge_files)
+
+    def print_icesat_parameters(self):
+        print('ICESat Parameters:')
+        print('    compile_icesat_data: ', self.compile_icesat_data)
+        if self.compile_icesat_data:
+            print('    download_new_icesat_data: ', self.download_new_icesat_data)
+            print('    max_number_of_icesat_files: ', self.max_number_of_icesat_files)
 
     def print_icesat2_parameters(self):
         print('ICESat-2 Parameters:')
