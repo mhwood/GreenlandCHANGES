@@ -12,12 +12,12 @@ GIMP | MEaSURES Greenland Ice Mapping Projection Digital Elevation Model | [NSID
 GLISTIN | Oceans Melting Greenland -  Glacier and Land Ice Topography Interferometer | [JPL PO.DAAC](https://podaac.jpl.nasa.gov/dataset/OMG_L3_ICE_ELEV_GLISTINA) | Implemented via Local Averaging
 Icebridge-LVIS | IceBridge LVIS-GH L2 Geolocated Surface Elevation Product | [NSIDC](https://nsidc.org/data/ILVGH2/versions/1) | Implemented via Local Averaging
 Icebridge-ILATM2  | IceBridge ATM L2 Icessn Elevation, Slope, and Roughness | [NSIDC](https://nsidc.org/data/ILATM2/versions/2) | Implemented via Local Averaging
-Icebridge-MCoRDS | IceBridge MCoRDS L2 Ice Thickness | [NSIDC](https://nsidc.org/data/IRMCR2/versions/1) | Not yet Implemented
-ICESat | GLAS/ICESat L2 Global Antarctic and Greenland Ice Sheet Altimetry Data (HDF5), Version 34 | [NSIDC](https://nsidc.org/data/GLAH12/versions/34) | Not yet implemented
+ICESat | GLAS/ICESat L2 Global Antarctic and Greenland Ice Sheet Altimetry Data (HDF5), Version 34 | [NSIDC](https://nsidc.org/data/GLAH12/versions/34) | Implemented via Local Averaging
 ICESat2 | ATLAS/ICESat-2 L3A Land Ice Height | [NSIDC](https://nsidc.org/data/atl06) | Implemented via Local Averaging
 KMS | Kort-og Matrikelstyrelsen DEM | [NSIDC](https://nsidc.org/data/NSIDC-0052/versions/1) | Not yet implemented
+Pre-Icebridge-ATM | Pre-IceBridge ATM L2 Icessn Elevation, Slope, and Roughness | [NSIDC](https://nsidc.org/data/BLATM2/versions/1) | Implemented via Local Averaging
 SPIRIT | SPOT 5 stereoscopic survey of Polar Ice: Reference Images and Topographies | Location TBD | Not yet implemented
-TanDEM-X | TanDEM-X 90m Digital Elevation Model | [DLR Geoservice](https://download.geoservice.dlr.de/TDM90) | Not yet implemented
+TanDEM-X | TanDEM-X 90m Digital Elevation Model | [DLR Geoservice](https://download.geoservice.dlr.de/TDM90) | Implemented via Linear Interpolation
 
 ## :exclamation: User Note
 The following citations must be included with the use of any data collected from the sources above:
@@ -48,8 +48,6 @@ Blair, J. B. and M. Hofton. 2015. IceBridge LVIS-GH L2 Geolocated Surface Elevat
 
 Studinger, M. 2014, updated 2020. IceBridge ATM L2 Icessn Elevation, Slope, and Roughness, Version 2. \[Indicate subset used\]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. doi: [https://doi.org/10.5067/CPRXXK3F39RV](https://doi.org/10.5067/CPRXXK3F39RV). \[Date Accessed\].
 
-Paden, J., J. Li, C. Leuschen, F. Rodriguez-Morales, and R. Hale. 2010, updated 2019. IceBridge MCoRDS L2 Ice Thickness, Version 1. [Indicate subset used]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. doi: [https://doi.org/10.5067/GDQ0CUCVTE2Q](https://doi.org/10.5067/GDQ0CUCVTE2Q). [Date Accessed].
-
 #### ICESAT
 
 Zwally, H. J., R. Schutz, D. Hancock, and J. Dimarzio. 2014. GLAS/ICESat L2 Global Antarctic and Greenland Ice Sheet Altimetry Data (HDF5), Version 34. [Indicate subset used]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. doi: [https://doi.org/10.5067/ICESAT/GLAS/DATA209](https://doi.org/10.5067/ICESAT/GLAS/DATA209). [Date Accessed].
@@ -57,6 +55,10 @@ Zwally, H. J., R. Schutz, D. Hancock, and J. Dimarzio. 2014. GLAS/ICESat L2 Glob
 #### ICESat-2:
 
 Smith, B., H. A. Fricker, A. Gardner, M. R. Siegfried, S. Adusumilli, B. M. Csathó, N. Holschuh, J. Nilsson, F. S. Paolo, and the ICESat-2 Science Team. 2020. ATLAS/ICESat-2 L3A Land Ice Height, Version 3. \[Indicate subset used\]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. doi: [https://doi.org/10.5067/ATLAS/ATL06.003](https://doi.org/10.5067/ATLAS/ATL06.003). \[Date Accessed\].
+
+#### Pre-Icebridge ATM
+
+Thomas, R. and M. Studinger. 2010. Pre-IceBridge ATM L2 Icessn Elevation, Slope, and Roughness, Version 1. \[Indicate subset used\]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. doi: [https://doi.org/10.5067/6C6WA3R918HJ](https://doi.org/10.5067/6C6WA3R918HJ). \[Date Accessed\].
 
 #### SPIRIT
 
