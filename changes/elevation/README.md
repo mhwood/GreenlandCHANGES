@@ -14,7 +14,7 @@ Icebridge-LVIS | IceBridge LVIS-GH L2 Geolocated Surface Elevation Product | [NS
 Icebridge-ILATM2  | IceBridge ATM L2 Icessn Elevation, Slope, and Roughness | [NSIDC](https://nsidc.org/data/ILATM2/versions/2) | Implemented via Local Averaging
 ICESat | GLAS/ICESat L2 Global Antarctic and Greenland Ice Sheet Altimetry Data (HDF5), Version 34 | [NSIDC](https://nsidc.org/data/GLAH12/versions/34) | Implemented via Local Averaging
 ICESat2 | ATLAS/ICESat-2 L3A Land Ice Height | [NSIDC](https://nsidc.org/data/atl06) | Implemented via Local Averaging
-KMS | Kort-og Matrikelstyrelsen DEM | [NSIDC](https://nsidc.org/data/NSIDC-0052/versions/1) | Not yet implemented
+KMS | Kort-og Matrikelstyrelsen DEM | [NSIDC](https://nsidc.org/data/NSIDC-0052/versions/1) | Implemented via Linear Interpolation
 Pre-Icebridge-ATM | Pre-IceBridge ATM L2 Icessn Elevation, Slope, and Roughness | [NSIDC](https://nsidc.org/data/BLATM2/versions/1) | Implemented via Local Averaging
 SPIRIT | SPOT 5 stereoscopic survey of Polar Ice: Reference Images and Topographies | Location TBD | Not yet implemented
 TanDEM-X | TanDEM-X 90m Digital Elevation Model | [DLR Geoservice](https://download.geoservice.dlr.de/TDM90) | Implemented via Linear Interpolation
@@ -55,6 +55,11 @@ Zwally, H. J., R. Schutz, D. Hancock, and J. Dimarzio. 2014. GLAS/ICESat L2 Glob
 #### ICESat-2:
 
 Smith, B., H. A. Fricker, A. Gardner, M. R. Siegfried, S. Adusumilli, B. M. Csathó, N. Holschuh, J. Nilsson, F. S. Paolo, and the ICESat-2 Science Team. 2020. ATLAS/ICESat-2 L3A Land Ice Height, Version 3. \[Indicate subset used\]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. doi: [https://doi.org/10.5067/ATLAS/ATL06.003](https://doi.org/10.5067/ATLAS/ATL06.003). \[Date Accessed\].
+
+#### KMS
+
+Fahnestock, Mark, Simon Ekholm, Kenneth Knowles, Ron Kwok, Ted Scambos 1997. Digital SAR Mosaic and Elevation Map of the Greenland Ice Sheet, Version 1. \[Indicate subset used\]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. doi: [https://doi.org/10.5067/WZMPK0L17X7N](https://doi.org/10.5067/WZMPK0L17X7N). \[Date Accessed\].
+
 
 #### Pre-Icebridge ATM
 
