@@ -149,6 +149,12 @@ class GreenlandCHANGES:
         self.kms_output_file = ''
         self.save_tif_copy_of_kms_dem = True
 
+        # Pre Operation Icebridge - ATM
+        self.compile_preicebridge_atm_data = True
+        self.download_new_preicebridge_atm_data = True
+        self.max_number_of_preicebridge_atm_files = 'all'
+        self.preicebridge_atm_output_file = ''
+
         # TanDEMX
         self.compile_tandemx_data = True
         self.download_new_tandemx_data = True
@@ -177,6 +183,7 @@ class GreenlandCHANGES:
         self.compile_icebridge_atm_data = False
         self.compile_icebridge_lvis_data = False
         self.compile_kms_data = False
+        self.compile_preicebridge_atm_data = False
         self.compile_tandemx_data = False
 
     # ####################################################################################################################

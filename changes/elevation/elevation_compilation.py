@@ -39,6 +39,10 @@ def download_and_regrid_elevation_data(GD_object):
         from .elevation_sources import compile_KMS_data as KMS
         KMS.generate_kms_dataset(GD_object)
 
+    if GD_object.compile_preicebridge_atm_data:
+        from .elevation_sources import compile_PreIcebridge_ATM_data as PIATM
+        PIATM.generate_PreIcebridge_ATM_dataset(GD_object)
+
     if GD_object.compile_tandemx_data:
         from .elevation_sources import compile_TanDEMX_data as TanDEMX
         TanDEMX.generate_TanDEMX_dataset(GD_object)
