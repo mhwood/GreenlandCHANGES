@@ -11,6 +11,10 @@ def download_and_regrid_elevation_data(GD_object):
         from .elevation_sources import compile_ArcticDEM_data as ArcticDEM
         ArcticDEM.generate_ArcticDEM_dataset(GD_object)
 
+    if GD_object.compile_cryosat2_data:
+        from .elevation_sources import compile_CryoSat2_data as CryoSat2
+        CryoSat2.generate_CryoSat2_dataset(GD_object)
+
     if GD_object.compile_glistin_data:
         from .elevation_sources import compile_GLISTIN_data as GLISTIN
         GLISTIN.generate_glistin_dataset(GD_object)
@@ -42,6 +46,10 @@ def download_and_regrid_elevation_data(GD_object):
     if GD_object.compile_preicebridge_atm_data:
         from .elevation_sources import compile_PreIcebridge_ATM_data as PIATM
         PIATM.generate_PreIcebridge_ATM_dataset(GD_object)
+
+    if GD_object.compile_sentinel3_data:
+        from .elevation_sources import compile_Sentinel3_data as Sentinel3
+        Sentinel3.generate_Sentinel3_dataset(GD_object)
 
     if GD_object.compile_tandemx_data:
         from .elevation_sources import compile_TanDEMX_data as TanDEMX

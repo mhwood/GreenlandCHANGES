@@ -452,8 +452,6 @@ def generate_ArcticDEM_dataset(GD_object):
 
     if GD_object.create_elevation_stacks:
 
-
-
         if GD_object.overwrite_existing_elevation_data:
             continue_to_stack = True
         else:
