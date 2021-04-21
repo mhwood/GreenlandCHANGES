@@ -102,6 +102,13 @@ class GreenlandCHANGES:
         self.max_number_of_arcticDEM_files = 'all'
         self.arcticdem_output_file = ''
 
+        # Cryosat2
+        self.compile_cryosat2_data = True
+        self.cryosat2_output_file = ''
+        self.max_number_of_cryosat2_files = 'all'
+        self.save_cryosat2_points_as_grids = False
+        self.save_cryosat2_points_as_points = True
+
         # GIMP
         self.compile_gimp_data = True
         self.gimp_output_file = ''
@@ -155,6 +162,13 @@ class GreenlandCHANGES:
         self.max_number_of_preicebridge_atm_files = 'all'
         self.preicebridge_atm_output_file = ''
 
+        # Sentinel3
+        self.compile_sentinel3_data = True
+        self.sentinel3_output_file = ''
+        self.max_number_of_sentinel3_files = 'all'
+        self.save_sentinel3_points_as_grids = False
+        self.save_sentinel3_points_as_points = True
+
         # TanDEMX
         self.compile_tandemx_data = True
         self.download_new_tandemx_data = True
@@ -176,6 +190,7 @@ class GreenlandCHANGES:
 
         self.compile_elevation = False
         self.compile_arcticDEM_data = False
+        self.compile_cryosat2_data = False
         self.compile_gimp_data = False
         self.compile_glistin_data = False
         self.compile_icesat_data = False
@@ -184,6 +199,7 @@ class GreenlandCHANGES:
         self.compile_icebridge_lvis_data = False
         self.compile_kms_data = False
         self.compile_preicebridge_atm_data = False
+        self.compile_sentinel3_data = False
         self.compile_tandemx_data = False
 
     # ####################################################################################################################
@@ -235,6 +251,13 @@ class GreenlandCHANGES:
             print('    resample_high_resolution_arcticDEM_data: ', self.resample_high_resolution_arcticDEM_data)
             print('    max_number_of_arcticDEM_files: ', self.max_number_of_arcticDEM_files)
 
+    def print_cryosat2_parameters(self):
+        print('CryoSat2 Parameters:')
+        print('    compile_cryosat2_data: ', self.compile_cryosat2_data)
+        if self.compile_cryosat2_data:
+            print('    download_new_cryosat2_data: ', self.download_new_cryosat2_data)
+            print('    max_number_of_cryosat2_files: ', self.max_number_of_cryosat2_files)
+
     def print_gimp_parameters(self):
         print('GIMP Parameters:')
         print('    compile_gimp_data: ', self.compile_gimp_data)
@@ -275,6 +298,13 @@ class GreenlandCHANGES:
         if self.compile_kms_data:
             print('    kms_output_file: ', self.kms_output_file)
             print('    save_tif_copy_of_kms_dem: ', self.save_tif_copy_of_kms_dem)
+
+    def print_sentinel3_parameters(self):
+        print('Sentinel-3 Parameters:')
+        print('    compile_sentinel3_data: ', self.compile_sentinel3_data)
+        if self.compile_sentinel3_data:
+            print('    download_new_sentinel3_data: ', self.download_new_sentinel3_data)
+            print('    max_number_of_sentinel3_files: ', self.max_number_of_sentinel3_files)
 
     def print_tandemx_parameters(self):
         print('ICESat-2 Parameters:')
