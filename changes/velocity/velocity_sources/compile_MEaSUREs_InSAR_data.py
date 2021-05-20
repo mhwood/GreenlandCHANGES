@@ -5,7 +5,7 @@ import itertools
 import requests
 import os
 import netCDF4 as nc4
-import gdal
+from osgeo import gdal
 
 def obtain_list_of_measures_insar_files_overlapping_domain(GD_object):
 
@@ -115,7 +115,7 @@ def obtain_list_of_measures_insar_files_overlapping_domain(GD_object):
         #this script below is adapted from the default downloading script provided by NSIDC
         short_name = 'NSIDC-0481'
         version = '3'
-        time_start = '2010-01-01T00:00:00Z'
+        time_start = '1900-01-01T00:00:00Z'
         time_end = '2050-01-01T23:59:59Z'
         polygon = create_polygon_string(GD_object)
         filename_filter = '*'
@@ -188,7 +188,12 @@ def download_measures_insar_files(GD_object,measures_insar_file_links, measures_
 
             output_file = os.path.join(GD_object.data_folder,'Velocity','MEaSUREs','InSAR','Data',location_id,file_name)
 
-            resp = requests.get(url)
+            session = requests.Session()
+            adapter = requests.adapters.HTTPAdapter(max_retries=20)
+            session.mount('https://', adapter)
+            session.mount('http://', adapter)
+            resp = session.get(url)
+
             open(output_file, 'wb').write(resp.content)
 
 def fileID_to_date_pair(fileID):
@@ -372,14 +377,12 @@ def create_velocity_stack(GD_object,measures_insar_file_names):
             ey_array = ey_array[yIndices, :]
             ey_array = ey_array[:, xIndices]
 
-
-
             for xi in range(len(x)):
                 xIndex = np.argmin(np.abs(GD_object.velocity_grid_x - x[xi]))
                 for yi in range(len(y)):
                     yIndex = np.argmin(np.abs(GD_object.velocity_grid_y - y[yi]))
-                    vx = vx_array[yi,xi]
-                    vy = vy_array[yi,xi]
+                    vx = vx_array[yi, xi]
+                    vy = vy_array[yi, xi]
                     ex = ex_array[yi, xi]
                     ey = ey_array[yi, xi]
                     v = (vx**2 + vy**2)**0.5
@@ -419,8 +422,12 @@ def create_velocity_stack(GD_object,measures_insar_file_names):
     return(vx_grids, vy_grids, v_grids,ex_grids, ey_grids, e_grids, output_date_pairs, source_lists)
 
 def output_data_stack(GD_object, vx_grids, vy_grids, v_grids,ex_grids, ey_grids, e_grids, date_pairs, source_lists):
-    output_file = os.path.join(GD_object.project_folder, GD_object.region_name, 'Velocity', 'Data',
-                               GD_object.region_name + ' MEaSUREs InSAR Velocity Grids.nc')
+
+    if len(GD_object.measures_insar_output_file)>2:
+        output_file = GD_object.measures_insar_output_file
+    else:
+        output_file = os.path.join(GD_object.project_folder, GD_object.region_name, 'Velocity', 'Data',
+                                   GD_object.region_name + ' MEaSUREs InSAR Velocity Grids.nc')
 
     data = nc4.Dataset(output_file, "w", format="NETCDF4")
 
@@ -518,9 +525,12 @@ def generate_MEaSUREs_InSAR_dataset(GD_object,testing=False):
     if GD_object.overwrite_existing_measures_insar_stack:
         stack_data = True
     else:
-        if GD_object.region_name + ' MEaSUREs InSAR Velocity Grids.nc' in os.listdir(os.path.join(GD_object.project_folder,
-                                                                                         GD_object.region_name,
-                                                                                         'Velocity', 'Data')):
+        if len(GD_object.measures_insar_output_file) > 2:
+            output_file = GD_object.measures_insar_output_file
+        else:
+            output_file = os.path.join(GD_object.project_folder,GD_object.region_name,
+                                       'Velocity', 'Data',GD_object.region_name + ' MEaSUREs InSAR Velocity Grids.nc')
+        if os.path.isfile(output_file):
             stack_data = False
         else:
             stack_data = True

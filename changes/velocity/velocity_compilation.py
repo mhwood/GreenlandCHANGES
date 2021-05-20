@@ -20,3 +20,11 @@ def download_and_regrid_velocity_data(GD_object):
     if GD_object.compile_measures_optical_data:
         from .velocity_sources import compile_MEaSUREs_Optical_data as MO
         MO.generate_MEaSUREs_Optical_dataset(GD_object)
+
+    if GD_object.compile_measures_quarterly_mosaic_data:
+        from .velocity_sources import compile_MEaSUREs_Quarterly_Mosaic_data as MQ
+        MQ.generate_MEaSUREs_Quarterly_Mosaic_dataset(GD_object)
+
+    if GD_object.compile_measures_multiyear_mosaic_data:
+        from .velocity_sources import compile_MEaSUREs_Multiyear_Mosaic_data as MQ
+        MQ.generate_MEaSUREs_Multiyear_Mosaic_dataset(GD_object)

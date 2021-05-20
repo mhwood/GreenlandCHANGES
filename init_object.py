@@ -78,6 +78,7 @@ class GreenlandCHANGES:
         self.download_new_measures_insar_data = True
         self.overwrite_existing_measures_insar_stack = False
         self.max_number_of_measures_insar_files = 'all'
+        self.measures_insar_output_file = ''
 
         # MEaSUREs Optical data
         self.compile_measures_optical_data = True
@@ -85,6 +86,19 @@ class GreenlandCHANGES:
         self.overwrite_existing_measures_optical_stack = False
         self.max_number_of_measures_optical_files = 'all'
         self.overwrite_existing_elevation_stacks = False
+
+        # MEaSUREs Quarterly Mosaic data
+        self.compile_measures_quarterly_mosaic_data = True
+        self.download_new_measures_quarterly_mosaic_data = True
+        self.overwrite_existing_measures_quarterly_mosaic_stack = False
+        self.max_number_of_measures_quarterly_mosaic_files = 'all'
+        self.measures_quarterly_mosaic_output_file = ''
+
+        # MEaSUREs Multi-year Mosaic data
+        self.compile_measures_multiyear_mosaic_data = True
+        self.download_new_measures_multiyear_mosaic_data = True
+        self.overwrite_existing_measures_multiyear_mosaic_stack = False
+        self.measures_multiyear_mosaic_output_file = ''
 
         # this is metadata pertaining to the elevation compilation
         self.compile_elevation = True
@@ -187,6 +201,8 @@ class GreenlandCHANGES:
         self.compile_golive_data = False
         self.compile_measures_insar_data = False
         self.compile_measures_optical_data = False
+        self.compile_measures_quarterly_mosaic_data = False
+        self.compile_measures_multiyear_mosaic_data = False
 
         self.compile_elevation = False
         self.compile_arcticDEM_data = False
@@ -222,6 +238,8 @@ class GreenlandCHANGES:
             print('        compile_golive_data:',self.compile_golive_data)
             print('        compile_measures_insar_data:', self.compile_measures_insar_data)
             print('        compile_measure_optical_data:', self.compile_measures_optical_data)
+            print('        compile_measures_quarterly_mosaic_data:', self.compile_measures_quarterly_mosaic_data)
+            print('        compile_measures_multiyear_mosaic_data:', self.compile_measures_multiyear_mosaic_data)
 
 
         print(' ')
@@ -336,9 +354,13 @@ class GreenlandCHANGES:
             self.region_initiated = True
 
 
-    def initiate_grids(self):
+    def initiate_velocity_grids(self):
         from .toolbox.initiation import grid_construction as gc
-        gc.create_grids_from_extents(self)
+        gc.create_velocity_grids_from_extents(self)
+
+    def initiate_elevation_grids(self):
+        from .toolbox.initiation import grid_construction as gc
+        gc.create_elevation_grids_from_extents(self)
 
     def write_process_metadata_output(self):
         self.end_time = time.time()
@@ -362,14 +384,17 @@ class GreenlandCHANGES:
             print('      GC.extents = [min_x,min_y,max_x,max_y]')
         else:
             self.create_directory_structure()
-            if len(self.elevation_grid_x)<1:
-                self.initiate_grids()
+
 
             if self.compile_velocity:
+                if len(self.velocity_grid_x) < 1:
+                    self.initiate_velocity_grids()
                 from .changes.velocity import velocity_compilation as vc
                 vc.download_and_regrid_velocity_data(self)
 
             if self.compile_elevation:
+                if len(self.elevation_grid_x) < 1:
+                    self.initiate_elevation_grids()
                 from .changes.elevation import elevation_compilation as ec
                 ec.download_and_regrid_elevation_data(self)
 

@@ -19,13 +19,16 @@ def create_grid_from_extents(extents,posting,epsg):
     y = y[y <= extents[3]]
     return(x,y)
 
-def create_grids_from_extents(GD_object):
+def create_velocity_grids_from_extents(GD_object):
     velocity_grid_x, velocity_grid_y = \
         create_grid_from_extents(GD_object.extents, GD_object.velocity_grid_posting, GD_object.velocity_grid_epsg)
-    elevation_grid_x, elevation_grid_y = \
-        create_grid_from_extents(GD_object.extents, GD_object.elevation_grid_posting, GD_object.elevation_grid_epsg)
 
     GD_object.velocity_grid_x = velocity_grid_x
     GD_object.velocity_grid_y = velocity_grid_y
+
+def create_elevation_grids_from_extents(GD_object):
+    elevation_grid_x, elevation_grid_y = \
+        create_grid_from_extents(GD_object.extents, GD_object.elevation_grid_posting, GD_object.elevation_grid_epsg)
+
     GD_object.elevation_grid_y = elevation_grid_y
     GD_object.elevation_grid_x = elevation_grid_x

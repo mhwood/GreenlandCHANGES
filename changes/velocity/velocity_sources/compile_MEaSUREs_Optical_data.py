@@ -5,7 +5,7 @@ import itertools
 import requests
 import os
 import netCDF4 as nc4
-import gdal
+from osgeo import gdal
 import matplotlib.pyplot as plt
 
 def obtain_list_of_measures_optical_files_overlapping_domain(GD_object):
@@ -236,6 +236,7 @@ def create_velocity_stack(GD_object,measures_optical_file_names):
     ey_grids = []
     v_grids = []
     e_grids = []
+    out_dates = []
     source_lists=[]
 
     for dd in range(len(dates)):
@@ -358,21 +359,26 @@ def create_velocity_stack(GD_object,measures_optical_file_names):
         # plt.colorbar(C2)
         # plt.show()
 
-        # if np.any(V>-9999):
-        vx_grids.append(VX)
-        vy_grids.append(VY)
-        v_grids.append(V)
-        ex_grids.append(EX)
-        ey_grids.append(EY)
-        e_grids.append(E)
-        source_lists.append(sources)
-        # else:
-        #     dates.pop(dates.index(date))
-    return(vx_grids, vy_grids, v_grids,ex_grids, ey_grids, e_grids, dates, source_lists)
+        if np.any(V>-9999):
+            out_dates.append(dates)
+            vx_grids.append(VX)
+            vy_grids.append(VY)
+            v_grids.append(V)
+            ex_grids.append(EX)
+            ey_grids.append(EY)
+            e_grids.append(E)
+            source_lists.append(sources)
+
+    return(vx_grids, vy_grids, v_grids,ex_grids, ey_grids, e_grids, out_dates, source_lists)
 
 def output_data_stack(GD_object, vx_grids, vy_grids, v_grids,ex_grids, ey_grids, e_grids, dates, source_lists):
-    output_file = os.path.join(GD_object.project_folder, GD_object.region_name, 'Velocity', 'Data',
-                               GD_object.region_name + ' MEaSUREs Optical Velocity Grids.nc')
+
+
+    if len(GD_object.measures_optical_output_file)>2:
+        output_file = GD_object.measures_optical_output_file
+    else:
+        output_file = os.path.join(GD_object.project_folder, GD_object.region_name, 'Velocity', 'Data',
+                                   GD_object.region_name + ' MEaSUREs Optical Velocity Grids.nc')
 
     data = nc4.Dataset(output_file, "w", format="NETCDF4")
 
@@ -462,21 +468,19 @@ def generate_MEaSUREs_Optical_dataset(GD_object,testing=False):
 
         download_measures_optical_files(GD_object,measures_optical_file_links, measures_optical_file_names,download_list)
 
-    else:
-        message = '        Skipping the download of new files by request'
-        GD_object.output_summary += '\n' + message
-        if GD_object.print_sub_outputs:
-            print(message)
-
     if GD_object.overwrite_existing_measures_optical_stack:
         stack_data = True
     else:
-        if GD_object.region_name + ' MEaSUREs Optical Velocity Grids.nc' in os.listdir(os.path.join(GD_object.project_folder,
-                                                                                         GD_object.region_name,
-                                                                                         'Velocity', 'Data')):
+        if len(GD_object.measures_optical_output_file) > 2:
+            output_file = GD_object.measures_optical_output_file
+        else:
+            output_file = os.path.join(GD_object.project_folder,GD_object.region_name,
+                                       'Velocity', 'Data',GD_object.region_name + ' MEaSUREs Optical Velocity Grids.nc')
+        if os.path.isfile(output_file):
             stack_data = False
         else:
             stack_data = True
+
 
     if stack_data and GD_object.create_velocity_stacks:
         message = '        Stacking MEaSUREs Optical data into a common grid'
