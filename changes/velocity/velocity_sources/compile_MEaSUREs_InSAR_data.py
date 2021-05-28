@@ -6,6 +6,7 @@ import requests
 import os
 import netCDF4 as nc4
 from osgeo import gdal
+from datetime import datetime
 
 def obtain_list_of_measures_insar_files_overlapping_domain(GD_object):
 
@@ -174,28 +175,6 @@ def obtain_download_list(GD_object,measures_insar_file_names):
     n_existing_files = len(measures_insar_file_names)-len(download_list)
     return(download_list,n_existing_files)
 
-def download_measures_insar_files(GD_object,measures_insar_file_links, measures_insar_file_names,download_list):
-
-    for ff in range(len(measures_insar_file_names)):
-        url = measures_insar_file_links[ff]
-        file_name = measures_insar_file_names[ff]
-        if file_name in download_list:
-            if GD_object.print_sub_outputs:
-                print('                Downloading '+file_name+' ('+str(download_list.index(file_name)+1)+' of '+str(len(download_list))+')')
-            location_id = file_name.split('_')[1]
-            if location_id not in os.listdir(os.path.join(GD_object.data_folder, 'Velocity', 'MEaSUREs', 'InSAR', 'Data')):
-                os.mkdir(os.path.join(GD_object.data_folder, 'Velocity', 'MEaSUREs', 'InSAR', 'Data', location_id))
-
-            output_file = os.path.join(GD_object.data_folder,'Velocity','MEaSUREs','InSAR','Data',location_id,file_name)
-
-            session = requests.Session()
-            adapter = requests.adapters.HTTPAdapter(max_retries=20)
-            session.mount('https://', adapter)
-            session.mount('http://', adapter)
-            resp = session.get(url)
-
-            open(output_file, 'wb').write(resp.content)
-
 def fileID_to_date_pair(fileID):
     def monthStringToInt(monthString):
         if monthString == 'Jan':
@@ -231,14 +210,42 @@ def fileID_to_date_pair(fileID):
     month1 = monthStringToInt(date1[2:-2])
     day1 = int(date1[:2])
 
+    datetime1 = datetime(year1,month1,day1)
+
     year2 = int('20' + date2[-2:])
     month2 = monthStringToInt(date2[2:-2])
     day2 = int(date2[:2])
 
+    datetime2 = datetime(year2, month2, day2)
+
     datePair = str(year1) + "{:02d}".format(int(month1)) + "{:02d}".format(int(day1)) + '-' + str(
         year2) + "{:02d}".format(int(month2)) + "{:02d}".format(int(day2))
-    return(datePair)
+    return(datePair,datetime1,datetime2)
 
+
+
+def download_measures_insar_files(GD_object,measures_insar_file_links, measures_insar_file_names,download_list):
+
+    for ff in range(len(measures_insar_file_names)):
+        url = measures_insar_file_links[ff]
+        file_name = measures_insar_file_names[ff]
+        _,datetime1,datetime2 = fileID_to_date_pair(file_name)
+        if file_name in download_list and datetime2>GD_object.date1 and datetime1<GD_object.date2:
+            if GD_object.print_sub_outputs:
+                print('                Downloading '+file_name+' ('+str(download_list.index(file_name)+1)+' of '+str(len(download_list))+' available)')
+            location_id = file_name.split('_')[1]
+            if location_id not in os.listdir(os.path.join(GD_object.data_folder, 'Velocity', 'MEaSUREs', 'InSAR', 'Data')):
+                os.mkdir(os.path.join(GD_object.data_folder, 'Velocity', 'MEaSUREs', 'InSAR', 'Data', location_id))
+
+            output_file = os.path.join(GD_object.data_folder,'Velocity','MEaSUREs','InSAR','Data',location_id,file_name)
+
+            session = requests.Session()
+            adapter = requests.adapters.HTTPAdapter(max_retries=20)
+            session.mount('https://', adapter)
+            session.mount('http://', adapter)
+            resp = session.get(url)
+
+            open(output_file, 'wb').write(resp.content)
 
 def create_velocity_stack(GD_object,measures_insar_file_names):
     measures_insar_folder = os.path.join(GD_object.data_folder, 'Velocity', 'MEaSUREs', 'InSAR','Data')
@@ -248,8 +255,8 @@ def create_velocity_stack(GD_object,measures_insar_file_names):
     date_pairs = []
     for file_name in measures_insar_file_names:
         fileID = file_name[:36]
-        date_pair = fileID_to_date_pair(fileID)
-        if date_pair not in date_pairs:
+        date_pair,datetime1,datetime2 = fileID_to_date_pair(fileID)
+        if date_pair not in date_pairs and datetime2>GD_object.date1 and datetime1<GD_object.date2:
             date_pairs.append(date_pair)
 
     # find list of file IDs which contain both x and y grids and create sets for each date pair
@@ -261,7 +268,7 @@ def create_velocity_stack(GD_object,measures_insar_file_names):
         file_sets_for_date = []
         for file_name in measures_insar_file_names:
             fileID = file_name[:36]
-            date = fileID_to_date_pair(fileID)
+            date,_,_ = fileID_to_date_pair(fileID)
             if date_pair == date:
                 location_id = file_name.split('_')[1]
                 if fileID not in fileIDs_for_date:

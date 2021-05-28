@@ -1,4 +1,5 @@
 
+import os
 
 
 def download_and_regrid_velocity_data(GD_object):
@@ -7,6 +8,9 @@ def download_and_regrid_velocity_data(GD_object):
     GD_object.output_summary += '\n'+message
     if GD_object.print_main_outputs:
         print(message)
+
+    if 'Velocity' not in os.listdir(GD_object.data_folder):
+        os.mkdir(os.path.join(GD_object.data_folder,'Velocity'))
 
 
     if GD_object.compile_golive_data:

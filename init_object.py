@@ -177,7 +177,7 @@ class GreenlandCHANGES:
         self.preicebridge_atm_output_file = ''
 
         # Sentinel3
-        self.compile_sentinel3_data = True
+        self.compile_sentinel3_data = False
         self.sentinel3_output_file = ''
         self.max_number_of_sentinel3_files = 'all'
         self.save_sentinel3_points_as_grids = False
@@ -252,12 +252,15 @@ class GreenlandCHANGES:
             print('    overwrite_existing_elevation_stacks: ', self.overwrite_existing_elevation_stacks)
             print('    Elevation Sources:')
             print('        compile_arcticDEM_data:', self.compile_arcticDEM_data)
+            print('        compile_cryosat2_data:', self.compile_cryosat2_data)
             print('        compile_gimp_data:', self.compile_gimp_data)
             print('        compile_glistin_data:', self.compile_glistin_data)
-            print('        compile_icebridge_data:', self.compile_icebridge_data)
+            print('        compile_icebridge_atm_data:', self.compile_icebridge_atm_data)
+            print('        compile_icebridge_lvis_data:', self.compile_icebridge_lvis_data)
             print('        compile_icesat_data:', self.compile_icesat_data)
             print('        compile_icesat2_data:', self.compile_icesat2_data)
             print('        compile_kms_data:', self.compile_kms_data)
+            print('        compile_preicebridge_atm_data',self.compile_preicebridge_atm_data)
             print('        compile_tandemx_data:', self.compile_tandemx_data)
 
     def print_arcticDEM_parameters(self):

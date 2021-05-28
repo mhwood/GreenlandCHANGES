@@ -36,7 +36,7 @@ def find_glistin_dem_files_from_shapefile(GD_object):
     bboxWKT = bboxToWKT(bbox)
     poly1 = ogr.CreateGeometryFromWkt(bboxWKT)
 
-    from ...reference import glistin_domains as gld
+    from ..reference import glistin_domains as gld
     glistin_ids = list(gld.glistin_id_to_polygon_outline.keys())
 
     output_ids = []
@@ -52,7 +52,7 @@ def find_glistin_dem_files_from_shapefile(GD_object):
 
     output = ''
     for strip in output_ids:
-        output += ''.join(strip)+'.nc'+ '\n'
+        output += ''.join(strip)+ '\n'
 
     f = open(os.path.join(GD_object.project_folder,GD_object.region_name,'Elevation','Metadata',GD_object.region_name + ' GLISTIN Files.csv'), 'w')
     f.write(output)

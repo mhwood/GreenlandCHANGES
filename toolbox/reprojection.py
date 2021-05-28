@@ -37,7 +37,8 @@ def reproject_polygon(polygon_array,inputCRS,outputCRS,x_column=0,y_column=1,run
     # There seems to be a serious problem with pyproj
     # The x's and y's are mixed up for these transformations
     #       For 4326->3413, you put in (y,x) and get out (x,y)
-    #       Foe 3413->4326, you put in (x,y) and get out (y,x)
+    #       For 3413->4326, you put in (x,y) and get out (y,x)
+    #       For 326XX->3413, you put in (x,y) and get out (x,y)
     # Safest to run check here to ensure things are outputting as expected with future iterations of pyproj
 
     if inputCRS == 4326 and outputCRS == 3413:
@@ -48,6 +49,11 @@ def reproject_polygon(polygon_array,inputCRS,outputCRS,x_column=0,y_column=1,run
         y2, x2 = transformer.transform(polygon_array[:, x_column], polygon_array[:, y_column])
         x2 = np.array(x2)
         y2 = np.array(y2)
+    elif str(inputCRS)[:3] == '326' and outputCRS == 3413:
+        x2, y2 = transformer.transform(polygon_array[:,x_column], polygon_array[:,y_column])
+        x2 = np.array(x2)
+        y2 = np.array(y2)
+        run_test = False
     else:
         raise ValueError('Reprojection with this epsg is not safe - no test for validity has been implemented')
 
