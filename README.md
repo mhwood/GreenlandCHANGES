@@ -25,15 +25,15 @@ conda activate greenlandchanges
 Next, install the dependencies of the GreenlandCHANGES package as
 ```
 conda install -c conda-forge gdal
-pip install shapely
+conda install -c conda-forge shaeply
 conda install -c anaconda geos
 conda install -c conda-forge scipy
-pip install numpy
-pip install netcdf4
-pip install xarray
-pip install pyproj==2.0.0
-pip install h5py
-pip install requests
+conda install numpy
+# conda install -c anaconda netcdf4
+pip install -c conda-forge xarray
+conda install -c conda-forge pyproj
+conda install h5py
+conda install -c anaconda requests
 ```
 
 Finally, the GreenlandCHANGES package can be cloned as 
