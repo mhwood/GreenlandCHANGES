@@ -22,19 +22,19 @@ conda create --name greenlandchanges
 conda activate greenlandchanges
 ```
 
-Next, install the dependencies of the GreenlandCHANGES package as
+Next, install the dependencies of the GreenlandCHANGES package and the tutorials herein:
 ```
-conda install -c conda-forge gdal
-conda install -c conda-forge shaeply
-conda install -c anaconda geos
-conda install -c conda-forge scipy
-conda install numpy
-# conda install -c anaconda netcdf4
-pip install -c conda-forge xarray
+conda install -c anaconda netcdf4
+conda install -c conda-forge matplotlib
+conda install -c anaconda xarray
 conda install -c conda-forge pyproj
-conda install h5py
-conda install -c anaconda requests
+conda install -c conda-forge scipy
+conda install -c conda-forge jupyterlab
+conda install -c anaconda ipykernel
+python3 -m ipykernel install --user --name=greenlandchanges
+conda install -c conda-forge gdal
 ```
+This order checked on MacOS 12 Oct 21.
 
 Finally, the GreenlandCHANGES package can be cloned as 
 ```
@@ -44,7 +44,11 @@ git clone https://github.com/mhwood/GreenlandCHANGES.git
 ## Using the GreenlandCHANGES package
 For convenience, we provide several tutorials, presented as jupyter notebooks, in the [tutorials](https://github.com/mhwood/GreenlandCHANGES/tree/master/tutorials) directory.
 
-To use your conda environment in the jupyter notebook tutorials, ensure that it is available in the IPy kernel using the following lines (within your activated environment):
+To use your conda environment in the jupyter notebook tutorials, make sure jupyter is installed in your environment
+```
+conda install -c conda-forge jupyterlab
+```
+and ensure that it is available in the IPy kernel:
 ```
 conda install -c anaconda ipykernel
 python3 -m ipykernel install --user --name=[name of environment]
