@@ -36,17 +36,14 @@
 # https://nsidc.org/data/atl15/versions/2
 # https://search.earthdata.nasa.gov/search?q=ATL15%20V002
 #
-#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # TODO: ATL 14 & 15 point to the same data collections.
 
 aaivm  = 'C2245171699-NSIDC_ECS' # MEaSUREs Annual Antarctic Ice Velocity Maps V001
 gqisvm = 'C2627036252-NSIDC_ECS' # MEaSUREs Greenland Quarterly Ice Sheet Velocity Mosaics from SAR and Landsat V005
 gmisvm = 'C2627046644-NSIDC_ECS' # MEaSUREs Greenland Monthly Ice Sheet Velocity Mosaics from SAR and Landsat, Version 5
-atl14   = 'C2500138845-NSIDC_ECS' # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height, Version 2 (ATL14)
-atl14ch = 'C2500140833-NSIDC_ECS' # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL14) 
-atl15   = 'C2500138845-NSIDC_ECS' # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height, Version 2 (ATL15)
-atl15ch = 'C2500140833-NSIDC_ECS' # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL15)
+atl14   = 'C2500138845-NSIDC_ECS'   # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height, Version 2 (ATL14)
+atl15   = 'C2500140833-NSIDC_ECS'     # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL15) 
 
 # each collection has a long name and a short name -- REQUIRED
 collections = {
@@ -62,14 +59,8 @@ collections = {
             'ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height, Version 2 (ATL14)': atl14,
             'ATL14 Antarctic LIH': atl14,
             
-            'ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL14)': atl14ch,
-            'ATL14 Antarctic LIH Change': atl14ch,
-
-            'ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height, Version 2 (ATL15)': atl15,
-            'ATL15 Antarctic LIH': atl15,
-            
-            'ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL15)': atl14ch,
-            'ATL15 Antarctic LIH Change': atl15ch
+            'ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL14)': atl15,
+            'ATL14 Antarctic LIH Change': atl15,
             }
 
 
