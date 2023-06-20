@@ -9,32 +9,51 @@ import requests
 import collection
 
 class IcesheetCHANGES:
-    def __init__(self, project_folder, data_folder, collection_key, collection_id, region_name, projection):
+    def __init__(self, project_folder, data_folder, collection_key, collection_id, region_name, data_type, projection):
 
         #this initiates the global domain and all of its associated parameters
         self.project_folder = project_folder
         self.data_folder = data_folder
+
+        self.region_name = region_name.strip().title()  # 'Antarctic' or 'Greenland'
+        self.data_type = data_type.strip().title()      # 'Velocity' or 'Elevation'
+        self.projection = projection
+
         self.collection_key = collection_key
         self.collection_id = collection_id
-        self.region_name = region_name
-        self.projection = projection
         self.long_name, self.short_name = collection.get_names(self.collection_key)
-        self.download_path = os.path.join(self.data_folder,self.region_name,'Velocity',self.short_name,'Data')
+        
+        self.download_path = os.path.join(self.data_folder, self.region_name, self.data_type, self.short_name, 'Data')
+        self.metadata_path = os.path.join(self.project_folder, self.region_name, self.data_type, 'Metadata')
+        
         self.velocity_grid_x = []
         self.velocity_grid_y = []
         self.elevation_grid_y = []
         self.elevation_grid_x = []
-
+        
+    # Print some attributes of the object requested 
+    def print_attributes(self):
+        print("Region name:\t\t", self.region_name)
+        print("Collection name:\t", self.long_name)
+        print("Collection short name:\t", self.short_name)
+        print("Collection ID: \t\t", self.collection_id)
+        print("Data type:\t\t", self.data_type)
+        print("Projection:\t\t", self.projection)
+        print("Download path:\t\t", self.download_path)
+        print("Metadata path:\t\t", self.metadata_path)
+        return
 
     # Projections are defined by EPSG codes (https://epsg.io/)
     def set_projection(self, projection):
         self.projection = projection
     def get_projection(self):
         return self.projection
+    
+
 
 class AntarcticCHANGES(IcesheetCHANGES):
-    def __init__(self, project_folder, data_folder, collection_key, collection_id, region_name, projection = 3031):
-        super().__init__(project_folder, data_folder, collection_key, collection_id, region_name, projection)
+    def __init__(self, project_folder, data_folder, collection_key, collection_id, data_type, region_name, projection = 3031):
+        super().__init__(project_folder, data_folder, collection_key, collection_id, data_type, region_name, projection)
         #self.downloaded_data_path = os.path.join(self.data_folder,self.region_name,'Velocity',self.short_name,'Data')
         pass
 
@@ -42,8 +61,8 @@ class AntarcticCHANGES(IcesheetCHANGES):
         print('testAC')
 
 class GreenlandCHANGES(IcesheetCHANGES):
-    def __init__(self, project_folder, data_folder, collection_key, collection_id, region_name, projection = 3413):
-        super().__init__(project_folder, data_folder, collection_key, collection_id, region_name, projection)
+    def __init__(self, project_folder, data_folder, collection_key, collection_id, data_type, region_name, projection = 3413):
+        super().__init__(project_folder, data_folder, collection_key, collection_id, data_type, region_name, projection)
         #self.downloaded_data_path = os.path.join(self.data_folder,self.region_name,'Velocity',self.short_name,'Data')
         pass 
 
