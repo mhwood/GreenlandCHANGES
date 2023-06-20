@@ -38,6 +38,7 @@
 #
 #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# TODO: ATL 14 & 15 point to the same data collections.
 
 aaivm  = 'C2245171699-NSIDC_ECS' # MEaSUREs Annual Antarctic Ice Velocity Maps V001
 gqisvm = 'C2627036252-NSIDC_ECS' # MEaSUREs Greenland Quarterly Ice Sheet Velocity Mosaics from SAR and Landsat V005
@@ -46,9 +47,6 @@ atl14   = 'C2500138845-NSIDC_ECS' # ATLAS/ICESat-2 L3B Gridded Antarctic and Arc
 atl14ch = 'C2500140833-NSIDC_ECS' # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL14) 
 atl15   = 'C2500138845-NSIDC_ECS' # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height, Version 2 (ATL15)
 atl15ch = 'C2500140833-NSIDC_ECS' # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL15)
-
-
-# Note: ATL 14 & 15 point to the same data collections.
 
 # each collection has a long name and a short name -- REQUIRED
 collections = {
@@ -78,7 +76,6 @@ collections = {
 def collection(collection_key):    
     if collection_key not in collections:
         raise ValueError('Collection key not recognized')
-    # if the collection key is indexed in an even position
     return collections[collection_key]
 
 def print_collections():
