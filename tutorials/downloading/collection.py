@@ -38,25 +38,26 @@ atl14ch = 'C2500140833-NSIDC_ECS' # ATLAS/ICESat-2 L3B Gridded Antarctic and Arc
 # each collection has a long name and a short name -- REQUIRED
 collections = {
             'MEaSUREs Annual Antarctic Ice Velocity Maps V001': aaivm, 
-            'Antarctic Annual Velocity': aaivm,
+            'MEaSUREs Antarctic Annual Velocity': aaivm,
 
             'MEaSUREs Greenland Quarterly Ice Sheet Velocity Mosaics from SAR and Landsat V005': gqisvm,
-            'Greenland Quarterly Velocity': gqisvm,
+            'MEaSUREs Greenland Quarterly Velocity': gqisvm,
 
             'MEaSUREs Greenland Monthly Ice Sheet Velocity Mosaics from SAR and Landsat, Version 5': gmisvm,
-            'Greenland Monthly Velocity': gmisvm,
+            'MEaSUREs Greenland Monthly Velocity': gmisvm,
 
             'ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height, Version 2 (ATL14)': atl14,
-            'ATL14 LIH': atl14,
+            'ATL14 Antarctic LIH': atl14,
             
             'ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL14)': atl14ch,
-            'ATL14 LIH Change': atl14ch
+            'ATL14 Antarctic LIH Change': atl14ch
             }
 
 
 def collection(collection_key):    
     if collection_key not in collections:
         raise ValueError('Collection key not recognized')
+    # if the collection key is indexed in an even position
     return collections[collection_key]
 
 def print_collections():
@@ -68,3 +69,12 @@ def print_collections():
             print()
             i += 1
     return
+
+def get_names(collection_key):
+    if list(collections.keys()).index(collection_key) % 2 == 0:
+        long_name = collection_key
+        short_name = list(collections.keys())[list(collections.keys()).index(collection_key)+1]
+    else:
+        short_name = collection_key
+        long_name = list(collections.keys())[list(collections.keys()).index(collection_key)-1]
+    return long_name, short_name
