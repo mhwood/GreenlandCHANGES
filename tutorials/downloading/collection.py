@@ -2,31 +2,41 @@
 # Data Collection IDs
 #
 # MEaSUREs Annual Antarctic Ice Velocity Maps V001
-# Short Name: Antarctic Annual Velocity
+# Short Name: MEaSUREs Antarctic Annual Velocity
 # https://nsidc.org/data/nsidc-0720/versions/1
 # https://search.earthdata.nasa.gov/search?q=NSIDC-0720%20V001
 # 
 # MEaSUREs Greenland Quarterly Ice Sheet Velocity Mosaics from SAR and Landsat V005
-# Short Name: Greenland Quarterly Velocity
+# Short Name: MEaSUREs Greenland Quarterly Velocity
 # https://nsidc.org/data/nsidc-0727/versions/5
 # https://search.earthdata.nasa.gov/search?q=NSIDC-0727%20V005
 # 
 # MEaSUREs Greenland Monthly Ice Sheet Velocity Mosaics from SAR and Landsat, Version 5
-# Short Name: Greenland Monthly Velocity
-# https://nsidc.org/data/nsidc-0731/versions/1
-# https://search.earthdata.nasa.gov/search?q=NSIDC-0731%20V005
+# Short Name: MEaSUREs Greenland Monthly Velocity
+# https://nsidc.org/data/nsidc-0731/versions/5
+# https://search.earthdata.nasa.gov/search?q=NSIDC-0731+V005
 #  
 # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height, Version 2 (ATL14) -- (Cloud data also avail-- See Earthdata for more info)
-# Short Name: ATL14
+# Short Name: ATL14 Antarctic LIH
 # https://nsidc.org/data/atl14/versions/2
 # https://search.earthdata.nasa.gov/search?q=ATL14%20V002
 #
 # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL14) -- (Cloud data also avail-- See Earthdata for more info)
-# Short Name: ATL14ch
+# Short Name: ATL14 Antarctic LIH Change
 # https://nsidc.org/data/atl14/versions/2
 # https://search.earthdata.nasa.gov/search?q=ATL14%20V002
 #
-# 
+# ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height, Version 2 (ATL15)
+# Short Name: ATL15 Antarctic LIH
+# https://nsidc.org/data/atl15/versions/2
+# https://search.earthdata.nasa.gov/search?q=ATL15%20V002
+#
+# ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL15)
+# Short Name: ATL15 Antarctic LIH Change
+# https://nsidc.org/data/atl15/versions/2
+# https://search.earthdata.nasa.gov/search?q=ATL15%20V002
+#
+#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 aaivm  = 'C2245171699-NSIDC_ECS' # MEaSUREs Annual Antarctic Ice Velocity Maps V001
@@ -34,6 +44,11 @@ gqisvm = 'C2627036252-NSIDC_ECS' # MEaSUREs Greenland Quarterly Ice Sheet Veloci
 gmisvm = 'C2627046644-NSIDC_ECS' # MEaSUREs Greenland Monthly Ice Sheet Velocity Mosaics from SAR and Landsat, Version 5
 atl14   = 'C2500138845-NSIDC_ECS' # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height, Version 2 (ATL14)
 atl14ch = 'C2500140833-NSIDC_ECS' # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL14) 
+atl15   = 'C2500138845-NSIDC_ECS' # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height, Version 2 (ATL15)
+atl15ch = 'C2500140833-NSIDC_ECS' # ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL15)
+
+
+# Note: ATL 14 & 15 point to the same data collections.
 
 # each collection has a long name and a short name -- REQUIRED
 collections = {
@@ -50,7 +65,13 @@ collections = {
             'ATL14 Antarctic LIH': atl14,
             
             'ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL14)': atl14ch,
-            'ATL14 Antarctic LIH Change': atl14ch
+            'ATL14 Antarctic LIH Change': atl14ch,
+
+            'ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height, Version 2 (ATL15)': atl15,
+            'ATL15 Antarctic LIH': atl15,
+            
+            'ATLAS/ICESat-2 L3B Gridded Antarctic and Arctic Land Ice Height Change, Version 2 (ATL15)': atl14ch,
+            'ATL15 Antarctic LIH Change': atl15ch
             }
 
 
@@ -78,3 +99,18 @@ def get_names(collection_key):
         short_name = collection_key
         long_name = list(collections.keys())[list(collections.keys()).index(collection_key)-1]
     return long_name, short_name
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# TODO - decide if we want to keep this functionality
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def add_to_dict(collection_key_long, collection_key_short, collection_id):
+    collections[collection_key_long] = collection_id
+    collections[collection_key_short] = collection_id
+    return
+
+def remove_from_dict(collection_id):
+    for key in list(collections.keys()):
+        if collections[key] == collection_id:
+            del collections[key]
+    return
