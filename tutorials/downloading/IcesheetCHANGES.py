@@ -69,6 +69,13 @@ class GreenlandCHANGES(IcesheetCHANGES):
     def test(self):
         print('testGC')
 
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# TODO: Functions for downloading data
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 # this function is from the ICESat2 data page
 def cmr_filter_urls(search_results):
     """Select only the desired data files from CMR response."""
@@ -110,91 +117,96 @@ def cmr_filter_urls(search_results):
     return urls
 
 ## write available file names and links to csv file
-def write_to_csv(AC, availible_file_names, availible_file_links):
-    if not os.path.exists(os.path.join(AC.project_folder,AC.region_name,'Velocity','Metadata')):
-        os.makedirs(os.path.join(AC.project_folder,AC.region_name,'Velocity','Metadata'))
-    f = open(os.path.join(AC.project_folder,AC.region_name,'Velocity','Metadata', AC.collection_key + ' ' + AC.collection_id + '.csv'),'w')
+def write_to_csv(IC, availible_file_names, availible_file_links):
+    if not os.path.exists(IC.metadata_path):
+        os.makedirs(IC.metadata_path)
 
+    f = open(os.path.join(IC.metadata_path, IC.short_name + '.csv'),'w')
     f.write('File_Name,URL')
     for ea in range(len(availible_file_names)):
         f.write('\n'+availible_file_names[ea]+','+availible_file_links[ea])
     f.close()
 
 
-def cmr_api_url(AC):
+def cmr_api_url(IC):
     # Build and call the CMR API URL
-    cmr_query_url = 'https://cmr.earthdata.nasa.gov/search/granules.json?echo_collection_id=' + AC.collection_id + '&page_size=2000'
+    cmr_query_url = 'https://cmr.earthdata.nasa.gov/search/granules.json?echo_collection_id=' + IC.collection_id + '&page_size=2000'
     response = requests.get(cmr_query_url)
 
     # print error code based on response
     if response.status_code != 200:
         print('ERROR: {}'.format(response.status_code))
     search_page = response.json()
+
     # If JSON contains an error message, print the message at the key, 'error'
     if 'errors' in search_page:
         print(search_page['errors'])
     else: 
         urls = cmr_filter_urls(search_page)
         print("Successfully obtained {} URLs.".format(len(urls)))
-        # Get only .nc files and also store the file names in a seperate list
+
+        # Store the file names in a seperate list
         availible_file_links = []
         availible_file_names = []
         for url in urls:
-            if '.nc'in url and not 'xml' in url:
+            if not 'xml' in url:
                 availible_file_links.append(url)
                 url_parts = url.split('/')
                 file_name = url_parts[-1]
                 availible_file_names.append(file_name)
-        write_to_csv(AC, availible_file_names, availible_file_links)
+        write_to_csv(IC, availible_file_names, availible_file_links)
 
     return availible_file_names, availible_file_links
 
-
-
 # check for existing files, get a list of files not on disk
-def obtain_download_list(AC, file_names, file_links):
+def obtain_download_list(IC, file_names, file_links):
     
-    output_folder=os.path.join(AC.data_folder,'Velocity','MEaSUREs','Annual','Data')
+    output_folder=os.path.join(IC.download_path)
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     
     download_list_names=[]
     download_list_links=[]
-    for fil in file_names:
+    for file in file_names:
         download_file = True
-        if fil not in os.listdir(os.path.join(output_folder)):
-            for existing_fil in os.listdir(os.path.join(output_folder)):
-                if fil == existing_fil:  # this allows for older versions to be kept 
+        if file not in os.listdir(os.path.join(output_folder)):
+            for existing_file in os.listdir(os.path.join(output_folder)):
+                if file == existing_file:  # this allows for older versions to be kept 
                     download_file = False
         else:
             download_file=False
+
         if download_file:
-            download_list_names.append(fil)
-            download_list_links.append(file_links[file_names.index(fil)])
-    #n_existing_files = len(file_names)-len(download_list)
-    return(download_list_names, download_list_links) #,n_existing_files)
+            download_list_names.append(file)
+            download_list_links.append(file_links[file_names.index(file)])
+
+    return(download_list_names, download_list_links) 
 
 
-def download_nc_direct(AC, file_names, file_links):
+def download_nc_direct(IC, file_names, file_links):
+    
+    print('Downloading ' + str(len(file_names)) + ' file(s)...')
+
     not_downloaded_names = []
     not_downloaded_links = []
-    print('Downloading ' + str(len(file_names)) + ' file(s)...')
+
     for i in range(len(file_names)):
-        # progress report
         print('Downloading ' + str(i + 1) + '/' + str(len(file_names)) + ': ' + file_names[i], end='\r')
+        
         # get request (download file)
         r = requests.get(file_links[i], allow_redirects=True)
         if r.status_code != 200:    # 200 is the standard response for successful HTTP requests
             print('ERROR: ' + str(r.status_code) + '\n')
             not_downloaded_names.append(file_names[i])
             not_downloaded_links.append(file_links[i])
+        
         # write content to file
-        open(os.path.join(AC.data_folder,'Velocity','MEaSUREs','Annual','Data',file_names[i]), 'wb').write(r.content)
+        open(os.path.join(IC.download_path,file_names[i]), 'wb').write(r.content)
     return(not_downloaded_names, not_downloaded_links)
 
-def run_download_nc_direct(AC, dl_list_names, dl_list_links):
+def run_download_nc_direct(IC, dl_list_names, dl_list_links):
     # Download the files
-    not_downloaded_names, not_downloaded_links = download_nc_direct(AC, dl_list_names, dl_list_links)
+    not_downloaded_names, not_downloaded_links = download_nc_direct(IC, dl_list_names, dl_list_links)
 
     # Attempt to download any files that were not downloaded the first time
     if len(not_downloaded_names) > 0:
@@ -203,7 +215,7 @@ def run_download_nc_direct(AC, dl_list_names, dl_list_links):
             print(not_downloaded_names[i] + ': ' + not_downloaded_links[i])
             
         print('Attempting to download these files once more...')
-        not_downloaded_names, not_downloaded_links = download_nc_direct(AC, not_downloaded_names, not_downloaded_links)
+        not_downloaded_names, not_downloaded_links = download_nc_direct(IC, not_downloaded_names, not_downloaded_links)
         if len(not_downloaded_names) > 0:
             print('Please download these files manually and place them in the following folder:')
-            print(os.path.join(AC.data_folder,'Velocity','MEaSUREs','Annual','Data'))
+            print(IC.download_path)
