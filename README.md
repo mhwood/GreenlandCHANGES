@@ -54,3 +54,6 @@ conda install -c anaconda ipykernel
 python3 -m ipykernel install --user --name=[name of environment]
 ```
 
+## How To Configure Earthdata Login Authentication
+[Step-by-step Guide to Configure Authentication Credentials](https://urs.earthdata.nasa.gov/documentation/for_users/data_access/curl_and_wget)
+
